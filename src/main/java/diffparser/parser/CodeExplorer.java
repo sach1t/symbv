@@ -2,6 +2,7 @@ package main.java.diffparser.parser;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.PackageDeclaration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,9 +20,20 @@ public class CodeExplorer {
         HashMap<String, LineInterval> hashMap = new HashMap<>();
 
         CompilationUnit cu = JavaParser.parse(code);
-        cu.getTypes().forEach(type ->
-            type.getMethods().forEach(method ->
-                hashMap.put(method.getName().asString(), LineInterval.convert(method))));
+        String packageName = cu.getPackageDeclaration().isPresent() ?
+                cu.getPackageDeclaration().get().getNameAsString() : null;
+
+        cu.getTypes().forEach(type -> {
+            String functionName = type.getNameAsString();
+
+            type.getMethods().forEach(method -> {
+                String prefix = functionName;
+                if (packageName != null) {
+                    prefix = packageName + "." + prefix;
+                }
+                hashMap.put(prefix + "." + method.getName().asString(), LineInterval.convert(method));
+            });
+        });
 
         return hashMap;
     }
