@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <excludeFromCompile>
+      <file url="file://$PROJECT_DIR$/src/test/java/diffparser/MyTestClass.java" />
+    </excludeFromCompile>
     <annotationProcessing>
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -9,8 +12,8 @@
         <module name="symbv" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="symbv" target="1.5" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="symbv" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
