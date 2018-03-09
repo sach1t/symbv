@@ -12,10 +12,11 @@ public class CodeExplorerTest {
             "\n  int field;" +
             "\n  void x (){ " +
             "\n    field = 0;" +
-            "}}";
+            "\n}}";
     CodeExplorer ceSimple = new CodeExplorer(codeSimple);
 
-    String codeMultiple = "class X {" +
+    String codeMultiple = "package dream.was.so.big;" +
+        "\nclass X {" +
         "\n  int field;" +
         "\n  void x (){ " +
         "\n    field = 0;" +
@@ -32,7 +33,6 @@ public class CodeExplorerTest {
 
     @Before
     public void init() {
-        System.out.println("Init");
         modifiedLines = new ArrayList<>();
     }
 
@@ -50,7 +50,7 @@ public class CodeExplorerTest {
 
         List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
         Assert.assertEquals(1, modified.size());
-        Assert.assertEquals(true, modified.contains("x"));
+        Assert.assertEquals(true, modified.contains("X.x"));
     }
 
     @Test
@@ -59,19 +59,28 @@ public class CodeExplorerTest {
 
         List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
         Assert.assertEquals(1, modified.size());
-        Assert.assertEquals(true, modified.contains("x"));
+        Assert.assertEquals(true, modified.contains("X.x"));
     }
 
     @Test
-    public void shouldFindMultipleModifiedFunctions() {
-        modifiedLines.add(4);
-        modifiedLines.add(7);
-        modifiedLines.add(10);
+    public void shouldFindModifiedFunctionLastLine() {
+        modifiedLines.add(5);
+
+        List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
+        Assert.assertEquals(1, modified.size());
+        Assert.assertEquals(true, modified.contains("X.x"));
+    }
+
+    @Test
+    public void shouldFindMultipleModifiedFunctionsWithPackage() {
+        modifiedLines.add(5);
+        modifiedLines.add(8);
+        modifiedLines.add(11);
 
         List<String> modified = ceMultiple.findModifiedMethods(modifiedLines);
         Assert.assertEquals(3, modified.size());
-        Assert.assertEquals(true, modified.contains("x"));
-        Assert.assertEquals(true, modified.contains("y"));
-        Assert.assertEquals(true, modified.contains("z"));
+        Assert.assertEquals(true, modified.contains("dream.was.so.big.X.x"));
+        Assert.assertEquals(true, modified.contains("dream.was.so.big.X.y"));
+        Assert.assertEquals(true, modified.contains("dream.was.so.big.X.z"));
     }
 }
