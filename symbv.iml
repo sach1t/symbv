@@ -11,8 +11,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: io.reflectoring.diffparser:diffparser:1.4" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
+    <orderEntry type="library" name="Maven: org.mockito:mockito-core:2.15.0" level="project" />
+    <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy:1.7.9" level="project" />
+    <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy-agent:1.7.9" level="project" />
+    <orderEntry type="library" name="Maven: org.objenesis:objenesis:2.6" level="project" />
     <orderEntry type="library" name="Maven: com.github.javaparser:javaparser-symbol-solver-core:3.5.16" level="project" />
     <orderEntry type="library" name="Maven: com.github.javaparser:javaparser-symbol-solver-logic:3.5.16" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.22.0-GA" level="project" />
