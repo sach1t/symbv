@@ -58,7 +58,7 @@ public class DiffApplier {
                 }
 
                 if (reading) {
-                    currentPatch = currentPatch + "\n" + line;
+                    currentPatch = currentPatch + line + "\n";
                 }
 
                 // Starting a new patch, should start reading if the filename is the same
