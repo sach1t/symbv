@@ -35,14 +35,14 @@ public class DiffApplier {
                     // Starting a new diff, get new and old filename, remove initial "a" or "b"
                     String[] tokens = line.split(" ");
                     newFilename = tokens[tokens.length-1];
-                    newFilename = newFilename.substring(1, newFilename.length());
+                    newFilename = newFilename.substring(2, newFilename.length());
                 } else if (line.startsWith("---")) {
                     String[] tokens = line.split(" ");
                     oldFilename = tokens[tokens.length-1];
 
                     // If a new file, there is no "a"
                     if (oldFilename.startsWith("a")) {
-                        oldFilename = oldFilename.substring(1, oldFilename.length());
+                        oldFilename = oldFilename.substring(2, oldFilename.length());
                     }
                 }
 
