@@ -1,12 +1,23 @@
 package main.java.diffparser.parser;
 
+import main.java.diffparser.io.FileManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class DiffApplier {
+    FileManager fileManager;
+    diff_match_patch diffMatchPatch;
+
+    public DiffApplier(FileManager fileManager) {
+        this.fileManager = fileManager;
+        this.diffMatchPatch = new diff_match_patch();
+    }
+
     protected Map<String, String> splitGitPatch(String patchText) {
         final Map<String, String> patches = new HashMap<>();
 
@@ -60,5 +71,22 @@ public class DiffApplier {
         }
 
         return patches;
+    }
+
+    protected DiffResult applyPatch(String filepath, String patch) {
+        String original;
+
+        try {
+            original = fileManager.readFile(filepath);
+        } catch (IOException e) {
+            System.out.println("Can't open file: " + filepath);
+            return null;
+        }
+
+        LinkedList<diff_match_patch.Patch> diffPatchs = diffMatchPatch.patch_fromText(patch);
+        String modified = new String(original);
+
+        modified = (String) diffMatchPatch.patch_apply(diffPatchs, modified)[0];
+        return new DiffResult(original, modified);
     }
 }
