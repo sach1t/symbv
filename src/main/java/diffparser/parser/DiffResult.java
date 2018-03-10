@@ -8,10 +8,10 @@ public class DiffResult {
     private String modified;
     private List<Integer> modifiedLines;
 
-    public DiffResult(String original, String modified) {
+    public DiffResult(String original, String modified, List<Integer> modifiedLines) {
         this.original = original;
         this.modified = modified;
-        this.modifiedLines = new ArrayList<>();
+        this.modifiedLines = modifiedLines;
     }
 
     public String getOriginal() {
