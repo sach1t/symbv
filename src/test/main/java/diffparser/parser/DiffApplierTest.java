@@ -1,14 +1,24 @@
 package main.java.diffparser.parser;
 
+import main.java.diffparser.io.FileManager;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
 
+import java.io.IOException;
 import java.util.Map;
 
-public class DiffApplierTest {
-    DiffApplier diffApplier = new DiffApplier();
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-    String oneChangePatch = "From b32e991d7e3d177d22bfc376a54d411abaa37723 Mon Sep 17 00:00:00 2001\n" +
+public class DiffApplierTest {
+    @Mock
+    static FileManager fileManager;
+
+    DiffApplier diffApplier = new DiffApplier(fileManager);
+
+    static String oneChangePatch = "From b32e991d7e3d177d22bfc376a54d411abaa37723 Mon Sep 17 00:00:00 2001\n" +
             "From: albf <albf.unicamp@gmail.com>\n" +
             "Date: Fri, 9 Mar 2018 00:30:39 -0500\n" +
             "Subject: [PATCH] yyy\n" +
@@ -28,11 +38,15 @@ public class DiffApplierTest {
             "2.11.0\n" +
             "\n";
 
-    String oneChangePatchExpected = "\n@@ -1 +1 @@\n" +
+    static String oneChangePatchExpected = "@@ -1 +1 @@\n" +
             "-ddddddd\n" +
-            "+ddddd";
+            "+ddddd\n";
 
-    String twoChangesPatch = "From 397ff5d8cc1091852dfec56d42b1b472f15416db Mon Sep 17 00:00:00 2001\n" +
+    static String oneChangeFilepath = "src/test/x";
+    static String oneChangeOriginal = "ddddddd";
+    static String oneChangeModified = "ddddd";
+
+    static String twoChangesPatch = "From 397ff5d8cc1091852dfec56d42b1b472f15416db Mon Sep 17 00:00:00 2001\n" +
             "From: albf <albf.unicamp@gmail.com>\n" +
             "Date: Sat, 10 Mar 2018 00:30:05 -0500\n" +
             "Subject: [PATCH] two files modification\n" +
@@ -64,27 +78,55 @@ public class DiffApplierTest {
             "2.11.0\n" +
             "\n";
 
-    String[] twoChangesPatchExpected = {
-            "\n@@ -1,5 +1,4 @@\n" +
+    static String[] twoChangesPatchExpected = {
+            "@@ -1,5 +1,4 @@\n" +
                     " a\n" +
                     "-b\n" +
                     "+k\n" +
                     " c\n" +
                     "-d\n" +
-                    " e",
+                    " e\n",
 
-            "\n@@ -1 +1 @@\n" +
+            "@@ -1 +1 @@\n" +
                     "-abc\n" +
-                    "+def"
+                    "+def\n"
     };
+
+    static String[] twoChangesFilepath = {
+            "src/main/java/diffparser/parser/x",
+            "src/main/java/diffparser/parser/y"
+    };
+
+    static String[] twoChangesOriginal = {
+            "a\nb\nc\nd\ne",
+            "abc"
+    };
+
+    static String[] twoChangesModified = {
+            "a\nk\nc\ne",
+            "def"
+    };
+
+    @BeforeClass
+    public static void setupMock() {
+        fileManager = mock(FileManager.class);
+        try {
+            when(fileManager.readFile(oneChangeFilepath)).thenReturn(oneChangeOriginal);
+            when(fileManager.readFile(twoChangesFilepath[0])).thenReturn(twoChangesOriginal[0]);
+            when(fileManager.readFile(twoChangesFilepath[1])).thenReturn(twoChangesOriginal[1]);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void shouldSplitGitDiffWithOneChange() {
         Map<String, String> patches = diffApplier.splitGitPatch(oneChangePatch);
 
         Assert.assertEquals(1, patches.size());
-        Assert.assertEquals(true, patches.containsKey("src/test/x"));
-        Assert.assertEquals(oneChangePatchExpected, patches.get("src/test/x"));
+        Assert.assertEquals(true, patches.containsKey(oneChangeFilepath));
+        Assert.assertEquals(oneChangePatchExpected, patches.get(oneChangeFilepath));
     }
 
     @Test
@@ -101,10 +143,26 @@ public class DiffApplierTest {
 
         Assert.assertEquals(2, patches.size());
 
-        Assert.assertEquals(true, patches.containsKey("src/main/java/diffparser/parser/x"));
-        Assert.assertEquals(twoChangesPatchExpected[0], patches.get("src/main/java/diffparser/parser/x"));
+        Assert.assertEquals(true, patches.containsKey(twoChangesFilepath[0]));
+        Assert.assertEquals(twoChangesPatchExpected[0], patches.get(twoChangesFilepath[0]));
 
-        Assert.assertEquals(true, patches.containsKey("src/main/java/diffparser/parser/y"));
-        Assert.assertEquals(twoChangesPatchExpected[1], patches.get("src/main/java/diffparser/parser/y"));
+        Assert.assertEquals(true, patches.containsKey(twoChangesFilepath[1]));
+        Assert.assertEquals(twoChangesPatchExpected[1], patches.get(twoChangesFilepath[1]));
+    }
+
+    @Test
+    public void shouldApplyPatchWithOneChangeCorrectly() {
+        DiffResult diffResult = diffApplier.applyPatch(oneChangeFilepath, oneChangePatchExpected);
+
+        Assert.assertEquals(oneChangeOriginal, diffResult.getOriginal());
+        Assert.assertEquals(oneChangeModified, diffResult.getModified());
+    }
+
+    @Test
+    public void shouldApplyPatchWithMultipleLinesChangedCorrectly() {
+        DiffResult diffResult = diffApplier.applyPatch(twoChangesFilepath[0], twoChangesPatchExpected[0]);
+
+        Assert.assertEquals(twoChangesOriginal[0], diffResult.getOriginal());
+        Assert.assertEquals(twoChangesModified[0], diffResult.getModified());
     }
 }
