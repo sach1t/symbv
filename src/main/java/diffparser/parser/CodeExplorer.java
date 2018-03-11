@@ -2,7 +2,6 @@ package main.java.diffparser.parser;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.PackageDeclaration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
