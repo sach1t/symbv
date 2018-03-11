@@ -156,6 +156,9 @@ public class DiffApplierTest {
 
         Assert.assertEquals(oneChangeOriginal, diffResult.getOriginal());
         Assert.assertEquals(oneChangeModified, diffResult.getModified());
+
+        Assert.assertEquals(1, diffResult.getModifiedLines().size());
+        Assert.assertEquals(new Integer(1), diffResult.getModifiedLines().get(0));
     }
 
     @Test
@@ -164,5 +167,9 @@ public class DiffApplierTest {
 
         Assert.assertEquals(twoChangesOriginal[0], diffResult.getOriginal());
         Assert.assertEquals(twoChangesModified[0], diffResult.getModified());
+
+        Assert.assertEquals(2, diffResult.getModifiedLines().size());
+        Assert.assertEquals(new Integer(2), diffResult.getModifiedLines().get(0));
+        Assert.assertEquals(new Integer(4), diffResult.getModifiedLines().get(1));
     }
 }

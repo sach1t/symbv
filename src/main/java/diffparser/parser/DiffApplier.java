@@ -9,11 +9,9 @@ import java.util.regex.Pattern;
 
 public class DiffApplier {
     FileManager fileManager;
-    diff_match_patch diffMatchPatch;
 
     public DiffApplier(FileManager fileManager) {
         this.fileManager = fileManager;
-        this.diffMatchPatch = new diff_match_patch();
     }
 
     protected Map<String, String> splitGitPatch(String gitPatchText) {
@@ -76,6 +74,12 @@ public class DiffApplier {
         return current + "\n" + newLine;
     }
 
+    private void appendDifferentLineNumber(List<Integer> list, int lineNumber) {
+        if (list.size() == 0 || (list.get(list.size() - 1) != lineNumber)) {
+            list.add(lineNumber);
+        }
+    }
+
     protected DiffResult applyPatch(String filepath, String patch) {
         String original;
 
@@ -94,7 +98,8 @@ public class DiffApplier {
 
 
         Pattern patchHeader = Pattern.compile("^@@ -(\\d+),?(\\d*) \\+(\\d+),?(\\d*) @@$");
-        int currentLine = 1;
+        int originalCurrentLine = 1;
+        int modifiedCurrentLine = 1;
 
         while (scanner.hasNextLine()) {
             String next = scanner.nextLine();
@@ -107,25 +112,30 @@ public class DiffApplier {
                     int originalHunkLine = Integer.parseInt(h.group(1));
 
                     // Copy all previous lines
-                    if (originalHunkLine < currentLine) {
-                        for (int i = currentLine; i < originalHunkLine; i++) {
+                    if (originalHunkLine < originalCurrentLine) {
+                        for (int i = originalCurrentLine; i < originalHunkLine; i++) {
                             modifiedFile = appendLine(modifiedFile, originalLines[i]);
                         }
-                        currentLine = originalHunkLine;
+                        modifiedCurrentLine = modifiedCurrentLine + originalCurrentLine - originalHunkLine;
+                        originalCurrentLine = originalHunkLine;
                     }
                     break;
                 case ' ':
                     // Line remains the same
-                    modifiedFile = appendLine(modifiedFile, originalLines[currentLine-1]);
-                    currentLine++;
+                    modifiedFile = appendLine(modifiedFile, originalLines[originalCurrentLine-1]);
+                    originalCurrentLine++;
+                    modifiedCurrentLine++;
                     break;
                 case '+':
                     // New Line was added
                     modifiedFile = appendLine(modifiedFile, next.substring(1));
+                    appendDifferentLineNumber(modifiedLines, modifiedCurrentLine);
+                    modifiedCurrentLine++;
                     break;
                 case '-':
                     // Line was removed, just move to the next
-                    currentLine++;
+                    originalCurrentLine++;
+                    appendDifferentLineNumber(modifiedLines, modifiedCurrentLine);
                     break;
                 default:
                     System.out.println("Unknown patch line: " + next);
