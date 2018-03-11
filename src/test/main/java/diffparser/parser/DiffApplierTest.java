@@ -107,6 +107,64 @@ public class DiffApplierTest {
             "def"
     };
 
+    static String abcPatch = "From 311bec457560e0083aa077bc38d574b4e3e323de Mon Sep 17 00:00:00 2001\n" +
+            "From: albf <albf.unicamp@gmail.com>\n" +
+            "Date: Sat, 10 Mar 2018 19:27:54 -0500\n" +
+            "Subject: [PATCH] DependableRocks\n" +
+            "\n" +
+            "---\n" +
+            " src/main/java/diffparser/parser/abc | 4 ++--\n" +
+            " 1 file changed, 2 insertions(+), 2 deletions(-)\n" +
+            "\n" +
+            "diff --git a/src/main/java/diffparser/parser/abc b/src/main/java/diffparser/parser/abc\n" +
+            "index 0edb856..82632d2 100644\n" +
+            "--- a/src/main/java/diffparser/parser/abc\n" +
+            "+++ b/src/main/java/diffparser/parser/abc\n" +
+            "@@ -1,7 +1,7 @@\n" +
+            " a\n" +
+            " b\n" +
+            " c\n" +
+            "-d\n" +
+            "+dependable\n" +
+            " e\n" +
+            " f\n" +
+            " g\n" +
+            "@@ -15,7 +15,7 @@ n\n" +
+            " o\n" +
+            " p\n" +
+            " q\n" +
+            "-r\n" +
+            "+rocks\n" +
+            " s\n" +
+            " t\n" +
+            " u\n" +
+            "-- \n" +
+            "2.11.0\n" +
+            "\n";
+
+    static String abcPatchExpected = "@@ -1,7 +1,7 @@\n" +
+            " a\n" +
+            " b\n" +
+            " c\n" +
+            "-d\n" +
+            "+dependable\n" +
+            " e\n" +
+            " f\n" +
+            " g\n" +
+            "@@ -15,7 +15,7 @@ n\n" +
+            " o\n" +
+            " p\n" +
+            " q\n" +
+            "-r\n" +
+            "+rocks\n" +
+            " s\n" +
+            " t\n" +
+            " u\n";
+
+    static String abcFilepath = "src/main/java/diffparser/parser/abc";
+    static String abcOriginal = "a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nr\ns\nt\nu\nv\nw\nx\ny\nz\n";
+    static String abcModified = "a\nb\nc\ndependable\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nrocks\ns\nt\nu\nv\nw\nx\ny\nz\n";
+
     @BeforeClass
     public static void setupMock() {
         fileManager = mock(FileManager.class);
@@ -114,6 +172,7 @@ public class DiffApplierTest {
             when(fileManager.readFile(oneChangeFilepath)).thenReturn(oneChangeOriginal);
             when(fileManager.readFile(twoChangesFilepath[0])).thenReturn(twoChangesOriginal[0]);
             when(fileManager.readFile(twoChangesFilepath[1])).thenReturn(twoChangesOriginal[1]);
+            when(fileManager.readFile(abcFilepath)).thenReturn(abcOriginal);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -171,5 +230,27 @@ public class DiffApplierTest {
         Assert.assertEquals(2, diffResult.getModifiedLines().size());
         Assert.assertEquals(new Integer(2), diffResult.getModifiedLines().get(0));
         Assert.assertEquals(new Integer(4), diffResult.getModifiedLines().get(1));
+    }
+
+    @Test
+    public void shouldSplitABCGitPatchCorrectly() {
+        Map<String, String> patches = diffApplier.splitGitPatch(abcPatch);
+
+        Assert.assertEquals(1, patches.size());
+
+        Assert.assertEquals(true, patches.containsKey(abcFilepath));
+        Assert.assertEquals(abcPatchExpected, patches.get(abcFilepath));
+    }
+
+    @Test
+    public void shouldApplyABCPatchCorrectly() {
+        DiffResult diffResult = diffApplier.applyPatch(abcFilepath, abcPatchExpected);
+
+        Assert.assertEquals(abcOriginal, diffResult.getOriginal());
+        Assert.assertEquals(abcModified, diffResult.getModified());
+
+        Assert.assertEquals(2, diffResult.getModifiedLines().size());
+        Assert.assertEquals(new Integer(4), diffResult.getModifiedLines().get(0));
+        Assert.assertEquals(new Integer(18), diffResult.getModifiedLines().get(1));
     }
 }

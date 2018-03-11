@@ -96,8 +96,8 @@ public class DiffApplier {
         String modifiedFile = "";
         List<Integer> modifiedLines = new ArrayList<>();
 
-
-        Pattern patchHeader = Pattern.compile("^@@ -(\\d+),?(\\d*) \\+(\\d+),?(\\d*) @@$");
+        // Caution, header might contain the first line/garbage
+        Pattern patchHeader = Pattern.compile("^@@ -(\\d+),?(\\d*) \\+(\\d+),?(\\d*) @@ ?(.*)$");
         int originalCurrentLine = 1;
         int modifiedCurrentLine = 1;
 
@@ -112,11 +112,11 @@ public class DiffApplier {
                     int originalHunkLine = Integer.parseInt(h.group(1));
 
                     // Copy all previous lines
-                    if (originalHunkLine < originalCurrentLine) {
-                        for (int i = originalCurrentLine; i < originalHunkLine; i++) {
+                    if ((originalHunkLine-1) > (originalCurrentLine-1)) {
+                        for (int i = originalCurrentLine-1; i < (originalHunkLine-1); i++) {
                             modifiedFile = appendLine(modifiedFile, originalLines[i]);
                         }
-                        modifiedCurrentLine = modifiedCurrentLine + originalCurrentLine - originalHunkLine;
+                        modifiedCurrentLine = modifiedCurrentLine + originalHunkLine - originalCurrentLine;
                         originalCurrentLine = originalHunkLine;
                     }
                     break;
@@ -140,6 +140,18 @@ public class DiffApplier {
                 default:
                     System.out.println("Unknown patch line: " + next);
                     break;
+            }
+        }
+
+        // Copy the rest of the file, if there is anything remaining
+        if ((originalCurrentLine-1) < originalLines.length) {
+            for(int i = (originalCurrentLine-1); i < originalLines.length; i++) {
+                modifiedFile = appendLine(modifiedFile, originalLines[i]);
+            }
+
+            // last \n is problematic
+            if (original.charAt(original.length()-1) == lineSeparator.charAt(lineSeparator.length()-1)) {
+                modifiedFile += lineSeparator;
             }
         }
 
