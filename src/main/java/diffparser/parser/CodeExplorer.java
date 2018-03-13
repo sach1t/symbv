@@ -2,6 +2,7 @@ package main.java.diffparser.parser;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.SimpleName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,5 +51,16 @@ public class CodeExplorer {
                 }));
 
         return modifiedMethods;
+    }
+
+    public void replaceClassNames() {
+        CompilationUnit cu = JavaParser.parse(code);
+
+        cu.getTypes().forEach(type -> {
+            SimpleName simpleName = new SimpleName(type.getNameAsString() + "-modified");
+            type.setName(simpleName);
+        });
+
+        code = cu.toString();
     }
 }
