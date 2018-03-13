@@ -67,11 +67,11 @@ public class DiffApplier {
         return patches;
     }
 
-    private String appendLine(String current, String newLine) {
+    private String appendLine(String current, String lineSeparator, String newLine) {
         if (current.isEmpty()) {
             return new String(newLine);
         }
-        return current + "\n" + newLine;
+        return current + lineSeparator + newLine;
     }
 
     private void appendDifferentLineNumber(List<Integer> list, int lineNumber) {
@@ -90,8 +90,8 @@ public class DiffApplier {
             return null;
         }
 
-        String lineSeparator = System.getProperty("line.separator");
-        String[] originalLines = original.split(lineSeparator);
+        String lineSeparator = original.contains("\r\n") ? "\r\n" : "\n";
+        String[] originalLines = original.split("\\r?\\n");
         Scanner scanner = new Scanner(patch);
         String modifiedFile = "";
         List<Integer> modifiedLines = new ArrayList<>();
@@ -108,13 +108,14 @@ public class DiffApplier {
                     Matcher h = patchHeader.matcher(next);
                     if (!h.matches()) {
                         System.out.println("Bad header line: " + next);
+                        continue;
                     }
                     int originalHunkLine = Integer.parseInt(h.group(1));
 
                     // Copy all previous lines
                     if ((originalHunkLine-1) > (originalCurrentLine-1)) {
                         for (int i = originalCurrentLine-1; i < (originalHunkLine-1); i++) {
-                            modifiedFile = appendLine(modifiedFile, originalLines[i]);
+                            modifiedFile = appendLine(modifiedFile, lineSeparator, originalLines[i]);
                         }
                         modifiedCurrentLine = modifiedCurrentLine + originalHunkLine - originalCurrentLine;
                         originalCurrentLine = originalHunkLine;
@@ -122,13 +123,13 @@ public class DiffApplier {
                     break;
                 case ' ':
                     // Line remains the same
-                    modifiedFile = appendLine(modifiedFile, originalLines[originalCurrentLine-1]);
+                    modifiedFile = appendLine(modifiedFile, lineSeparator, originalLines[originalCurrentLine-1]);
                     originalCurrentLine++;
                     modifiedCurrentLine++;
                     break;
                 case '+':
                     // New Line was added
-                    modifiedFile = appendLine(modifiedFile, next.substring(1));
+                    modifiedFile = appendLine(modifiedFile, lineSeparator, next.substring(1));
                     appendDifferentLineNumber(modifiedLines, modifiedCurrentLine);
                     modifiedCurrentLine++;
                     break;
@@ -146,7 +147,7 @@ public class DiffApplier {
         // Copy the rest of the file, if there is anything remaining
         if ((originalCurrentLine-1) < originalLines.length) {
             for(int i = (originalCurrentLine-1); i < originalLines.length; i++) {
-                modifiedFile = appendLine(modifiedFile, originalLines[i]);
+                modifiedFile = appendLine(modifiedFile, lineSeparator, originalLines[i]);
             }
 
             // last \n is problematic
