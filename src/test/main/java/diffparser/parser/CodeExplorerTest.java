@@ -15,7 +15,7 @@ public class CodeExplorerTest {
             "\n}}";
     CodeExplorer ceSimple = new CodeExplorer(codeSimple);
 
-    String codeMultiple = "package dream.was.so.big;" +
+    String codeMultipleMethods = "package dream.was.so.big;" +
         "\nclass X {" +
         "\n  int field;" +
         "\n  void x (){ " +
@@ -27,7 +27,22 @@ public class CodeExplorerTest {
         "\n  void z (){ " +
         "\n    field = 0;" +
         "\n}}";
-    CodeExplorer ceMultiple = new CodeExplorer(codeMultiple);
+    CodeExplorer ceMultipleMethods = new CodeExplorer(codeMultipleMethods);
+
+    String codeMultipleClasses = "package get.lucky;\n" +
+            "\n" +
+            "public class tss {\n" +
+            "    int x() {\n" +
+            "        return 1;\n" +
+            "    }\n" +
+            "}\n" +
+            "\n" +
+            "class tws {\n" +
+            "    int x() {\n" +
+            "        return 2;\n" +
+            "    }\n" +
+            "}";
+    CodeExplorer ceMultipleClasses = new CodeExplorer(codeMultipleClasses);
 
     List<Integer> modifiedLines;
 
@@ -77,10 +92,39 @@ public class CodeExplorerTest {
         modifiedLines.add(8);
         modifiedLines.add(11);
 
-        List<String> modified = ceMultiple.findModifiedMethods(modifiedLines);
+        List<String> modified = ceMultipleMethods.findModifiedMethods(modifiedLines);
         Assert.assertEquals(3, modified.size());
         Assert.assertEquals(true, modified.contains("dream.was.so.big.X.x"));
         Assert.assertEquals(true, modified.contains("dream.was.so.big.X.y"));
         Assert.assertEquals(true, modified.contains("dream.was.so.big.X.z"));
+    }
+
+    @Test
+    public void shouldReplaceClassNamesForMultiple() {
+        ceMultipleMethods.replaceClassNames();
+        String replaced = ceMultipleMethods.code
+                .replace("\n", "")
+                .replace(" ", "");
+
+        String expectedLines = codeMultipleMethods.replaceAll("X", "X-modified")
+                .replace("\n", "")
+                .replace(" ", "");
+
+        Assert.assertEquals(expectedLines, replaced);
+    }
+
+    @Test
+    public void shouldReplaceClassNamesForMultipleClasses() {
+        ceMultipleClasses.replaceClassNames();
+        String replaced = ceMultipleClasses.code
+                .replace("\n", "")
+                .replace(" ", "");
+
+        String expectedLines = codeMultipleClasses.replaceAll("tss", "tss-modified")
+                .replaceAll("tws", "tws-modified")
+                .replace("\n", "")
+                .replace(" ", "");
+
+        Assert.assertEquals(expectedLines, replaced);
     }
 }
