@@ -1,6 +1,5 @@
-package main.java.diffparser.parser;
+package diffparser.parser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DiffResult {
