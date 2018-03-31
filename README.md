@@ -17,7 +17,7 @@ Validating Code Changes Using Symbolic Execution
 
 ## Usage
 ```
-bin/jpf src/examples/basic/
+bin/jpf src/examples/basic/test.jpf
 ```
 
 ## Development Info
