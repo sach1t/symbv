@@ -4,10 +4,10 @@ public class Runner {
 
     public static void main(String args[]) {
         Runner r = new Runner();
-        r.test(0,0,0);
+        r.run(0,0,0);
     }
 
-    public void test(int pedalPos, int bSwitch, int pedalCmd) {
+    public void run(int pedalPos, int bSwitch, int pedalCmd) {
         Test original = new Test();
         TestPatched patched = new TestPatched();
 
