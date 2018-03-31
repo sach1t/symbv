@@ -45,7 +45,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="jpf-core" scope="PROVIDED" />
     <orderEntry type="module" module-name="jdart" scope="PROVIDED" />
-    <orderEntry type="module" module-name="jconstraints" scope="PROVIDED" />
     <orderEntry type="module-library">
       <library name="animal-sniffer-annotations-1.14.jar">
         <CLASSES>
@@ -239,6 +238,15 @@
       <library name="objenesis-2.6.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/objenesis-2.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jpf-jdart/lib/jconstraints-0.9.1-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
