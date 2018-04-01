@@ -68,7 +68,8 @@ public class SymbvConfig {
             config.remove(property);
             methodConfigs.remove(CONSTRAINTS_CONFIG);
         } else {
-            config.setProperty(property, String.join(";", constraints));
+            Set<String> uniqueConstraints = new HashSet<>(Arrays.asList(constraints));
+            config.setProperty(property, String.join(";", uniqueConstraints));
             methodConfigs.add(CONSTRAINTS_CONFIG);
         }
         updateMethodConfigProperty();
