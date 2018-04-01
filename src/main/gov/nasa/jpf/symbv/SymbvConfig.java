@@ -4,75 +4,80 @@ import gov.nasa.jpf.Config;
 import gov.nasa.jpf.JPF;
 import gov.nasa.jpf.util.JPFLogger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class SymbvConfig {
-    String METHOD_CONFIG_NAME = "fun";
-    String CONCOLIC_PROPERTY = "concolic.method." + METHOD_CONFIG_NAME;
-    String ANALYSIS_PROPERTY = "jdart.configs." + METHOD_CONFIG_NAME;
-    String TARGET_PROPERTY = "target";
-    Config config;
-    private JPFLogger logger = JPF.getLogger("symbv");
+    private String METHOD_CONFIG = "fun";
+    private String CONSTRAINTS_CONFIG = METHOD_CONFIG + "_constraints";
+    private String ALL_FIELDS_SYMBOLIC_CONFIG = METHOD_CONFIG + "_all_fields_symbolic";
 
+    private String CONCOLIC_PREFIX = "concolic.method";
+    private String ANALYSIS_PREFIX = "jdart.configs";
+
+    private Config config;
+    private JPFLogger logger = JPF.getLogger("symbv");
+    private Collection<String> methodConfigs;
 
     public SymbvConfig(Config jpfConfig) {
-        this.config = copyConfig(jpfConfig);
-        configureDefaults();
+        this.config = SymbvConfig.copyConfig(jpfConfig);
+        setDefaults();
+        methodConfigs = new HashSet<>();
     }
 
-    private Config copyConfig(Config conf) {
+    public static Config copyConfig(Config conf) {
         Config newConf = new Config("");
         newConf.putAll(conf);
         newConf.setClassLoader(conf.getClassLoader());
         return newConf;
     }
 
-    public void configureDefaults() {
+    private void setDefaults() {
         config.setProperty("symbolic.dp", "z3");
         config.setProperty("symbolic.dp.z3.bitvectors", "true");
-        config.setProperty("jdart.configs.all_fields_symbolic.symbolic.include", "this.*");
     }
 
-    /**
-     * Add configuration options for running a method concolically. To run this configuration
-     * use setActiveMethodConfig function.
-     * <p>
-     * See https://github.com/psycopaths/jdart/wiki/Concolic-Execution-Configuration
-     *
-     * @param FQClassName Fully qualified main class, e.g. simple.Runner
-     * @param methodSpec  method name with signature, e.g. run(a:int, b:boolean)
-     */
-    public void setConcolic(String FQClassName, String methodSpec) {
-        config.setProperty(TARGET_PROPERTY, FQClassName);
-        config.setProperty(CONCOLIC_PROPERTY, FQClassName + "." + methodSpec);
-        config.setProperty("concolic.method", METHOD_CONFIG_NAME);
+    public void setConcolicMethod(String FQClassName, String methodSpec) {
+        config.setProperty("target", FQClassName);
+        config.setProperty(CONCOLIC_PREFIX + "." + METHOD_CONFIG, FQClassName + "." + methodSpec);
+        config.setProperty(CONCOLIC_PREFIX, METHOD_CONFIG);
     }
 
-    private boolean hasMethodConfig() {
-        return config.hasValue(CONCOLIC_PROPERTY + ".config");
+    public void setInstanceFieldsSymbolic() {
+        config.setProperty(ANALYSIS_PREFIX + "." + ALL_FIELDS_SYMBOLIC_CONFIG + ".symbolic.include",  "this.*");
+        methodConfigs.add(ALL_FIELDS_SYMBOLIC_CONFIG);
+        updateMethodConfigProperty();
     }
 
-    private String getMethodConfig() {
-        return config.getProperty(CONCOLIC_PROPERTY + ".config");
+    private void updateMethodConfigProperty() {
+        String configs = String.join(";", methodConfigs);
+        config.setProperty(CONCOLIC_PREFIX + "." + METHOD_CONFIG + ".config", configs);
     }
 
-    public void setMethodInstanceFieldsSymbolic() {
-        if (hasMethodConfig()) {
-            logger.warning("Cannot have two active method configurations, old configuration " +
-                    getMethodConfig() + " disabled.");
+    public String[] getMethodConstraints() {
+        String constraints = config.getProperty(ANALYSIS_PREFIX + "." + CONSTRAINTS_CONFIG  + ".constraints");
+        if (constraints == null) {
+            return new String[]{};
         }
-        config.setProperty(CONCOLIC_PROPERTY + ".config", "all_fields_symbolic");
+        return constraints.split("\\s*;\\s*");
     }
 
-    public void setMethodConstraints(String constraints) {
-        if (hasMethodConfig()) {
-            logger.warning("Cannot have two active method configurations, old configuration " +
-                    getMethodConfig() + " disabled.");
+    public void setMethodConstraints(String...constraints) {
+        String property = ANALYSIS_PREFIX + "." + CONSTRAINTS_CONFIG  + ".constraints";
+        if (constraints.length == 0) {
+            config.remove(property);
+            methodConfigs.remove(CONSTRAINTS_CONFIG);
+        } else {
+            config.setProperty(property, String.join(";", constraints));
+            methodConfigs.add(CONSTRAINTS_CONFIG);
         }
-        config.setProperty(ANALYSIS_PROPERTY + ".constraints", constraints);
-        config.setProperty(CONCOLIC_PROPERTY + ".config", METHOD_CONFIG_NAME);
+        updateMethodConfigProperty();
+    }
+
+    public void addMethodConstraints(String...constraints) {
+        String[] allConstraints = Stream.concat(Arrays.stream(getMethodConstraints()), Arrays.stream(constraints))
+                .toArray(String[]::new);
+        setMethodConstraints(allConstraints);
     }
 
     public Config getJPFConfig() {
