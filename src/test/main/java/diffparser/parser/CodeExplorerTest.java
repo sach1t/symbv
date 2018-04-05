@@ -45,6 +45,14 @@ public class CodeExplorerTest {
             "}";
     CodeExplorer ceMultipleClasses = new CodeExplorer(codeMultipleClasses);
 
+    String codeFields = "class X {" +
+            "\n  int fieldDefault;" +
+            "\n  public int fieldPublic;" +
+            "\n  protected int fieldProtected;" +
+            "\n  private int fieldPrivate;" +
+            "\n}";
+    CodeExplorer ceFields = new CodeExplorer(codeFields);
+
     List<Integer> modifiedLines;
 
     @Before
@@ -100,32 +108,42 @@ public class CodeExplorerTest {
         Assert.assertEquals(true, modified.contains("dream.was.so.big.X.z"));
     }
 
+    private String noSpacings(String code) {
+        return code
+                .replace("\n", "")
+                .replace(" ", "");
+    }
+
     @Test
     public void shouldReplaceClassNamesForMultiple() {
         ceMultipleMethods.replaceClassNames();
-        String replaced = ceMultipleMethods.code
-                .replace("\n", "")
-                .replace(" ", "");
+        String replaced = ceMultipleMethods.currentCode();
 
-        String expectedLines = codeMultipleMethods.replaceAll("X", "X-modified")
-                .replace("\n", "")
-                .replace(" ", "");
+        String expectedLines = codeMultipleMethods.replaceAll("X", "X-modified");
 
-        Assert.assertEquals(expectedLines, replaced);
+        Assert.assertEquals(noSpacings(expectedLines), noSpacings(replaced));
     }
 
     @Test
     public void shouldReplaceClassNamesForMultipleClasses() {
         ceMultipleClasses.replaceClassNames();
-        String replaced = ceMultipleClasses.code
-                .replace("\n", "")
-                .replace(" ", "");
+        String replaced = ceMultipleClasses.currentCode();
 
         String expectedLines = codeMultipleClasses.replaceAll("tss", "tss-modified")
-                .replaceAll("tws", "tws-modified")
-                .replace("\n", "")
-                .replace(" ", "");
+                .replaceAll("tws", "tws-modified");
 
-        Assert.assertEquals(expectedLines, replaced);
+        Assert.assertEquals(noSpacings(expectedLines), noSpacings(replaced));
+    }
+
+    @Test
+    public void shouldMakeFieldsPublic() {
+        ceFields.makeFieldsPublic();
+
+        String expected = codeFields
+                .replace("int fieldDefault", "public int fieldDefault")
+                .replace("protected int", "public int")
+                .replace("private int", "public int");
+
+        Assert.assertEquals(noSpacings(expected), noSpacings(ceFields.currentCode()));
     }
 }
