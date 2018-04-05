@@ -119,7 +119,7 @@ public class CodeExplorerTest {
         ceMultipleMethods.replaceClassNames();
         String replaced = ceMultipleMethods.currentCode();
 
-        String expectedLines = codeMultipleMethods.replaceAll("X", "X-modified");
+        String expectedLines = codeMultipleMethods.replaceAll("X", "X" + CodeExplorer.CLASS_MODIFIER);
 
         Assert.assertEquals(noSpacings(expectedLines), noSpacings(replaced));
     }
@@ -129,8 +129,8 @@ public class CodeExplorerTest {
         ceMultipleClasses.replaceClassNames();
         String replaced = ceMultipleClasses.currentCode();
 
-        String expectedLines = codeMultipleClasses.replaceAll("tss", "tss-modified")
-                .replaceAll("tws", "tws-modified");
+        String expectedLines = codeMultipleClasses.replaceAll("tss", "tss" + CodeExplorer.CLASS_MODIFIER)
+                .replaceAll("tws", "tws" + CodeExplorer.CLASS_MODIFIER);
 
         Assert.assertEquals(noSpacings(expectedLines), noSpacings(replaced));
     }
