@@ -11,7 +11,7 @@ import java.util.List;
 public class CodeExplorerTest {
     String codeSimple = "class X {" +
             "\n  int field;" +
-            "\n  void x (){ " +
+            "\n  void m (){ " +
             "\n    field = 0;" +
             "\n}}";
     CodeExplorer ceSimple = new CodeExplorer(codeSimple);
@@ -74,7 +74,7 @@ public class CodeExplorerTest {
 
         List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
         Assert.assertEquals(1, modified.size());
-        Assert.assertEquals(true, modified.contains("X.x"));
+        Assert.assertEquals(true, modified.contains("X.m"));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class CodeExplorerTest {
 
         List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
         Assert.assertEquals(1, modified.size());
-        Assert.assertEquals(true, modified.contains("X.x"));
+        Assert.assertEquals(true, modified.contains("X.m"));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class CodeExplorerTest {
 
         List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
         Assert.assertEquals(1, modified.size());
-        Assert.assertEquals(true, modified.contains("X.x"));
+        Assert.assertEquals(true, modified.contains("X.m"));
     }
 
     @Test
@@ -145,5 +145,23 @@ public class CodeExplorerTest {
                 .replace("private int", "public int");
 
         Assert.assertEquals(noSpacings(expected), noSpacings(ceFields.currentCode()));
+    }
+
+    @Test
+    public void shouldInsertMethodCorrectly() {
+        try {
+            CodeMethod codeMethod = ceSimple.findCodeMethod("X.m");
+            ceMultipleMethods.includeMethod("X.m2", codeMethod);
+
+            String expected = codeMultipleMethods
+                    .replace("}}",
+                            "} void m2() {\n" +
+                            "        field = 0;\n" +
+                            "    }\n" +
+                            "}");
+            Assert.assertEquals(noSpacings(expected), noSpacings(ceMultipleMethods.currentCode()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
