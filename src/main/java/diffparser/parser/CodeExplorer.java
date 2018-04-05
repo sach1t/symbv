@@ -8,6 +8,7 @@ import com.github.javaparser.ast.expr.SimpleName;
 import java.util.*;
 
 public class CodeExplorer {
+    final static String CLASS_MODIFIER = "___modified";
     CompilationUnit cu;
 
     public CodeExplorer(String code) {
@@ -52,7 +53,7 @@ public class CodeExplorer {
 
     public void replaceClassNames() {
         this.cu.getTypes().forEach(type -> {
-            SimpleName simpleName = new SimpleName(type.getNameAsString() + "-modified");
+            SimpleName simpleName = new SimpleName(type.getNameAsString() + this.CLASS_MODIFIER);
             type.setName(simpleName);
         });
     }
