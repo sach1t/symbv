@@ -2,28 +2,25 @@ package main.java.diffparser.parser;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.expr.SimpleName;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CodeExplorer {
-    String code;
+    CompilationUnit cu;
 
     public CodeExplorer(String code) {
-        this.code = code;
+        this.cu = JavaParser.parse(code);
     }
 
     private Map<String, LineInterval> findAllMethods() {
         HashMap<String, LineInterval> hashMap = new HashMap<>();
 
-        CompilationUnit cu = JavaParser.parse(code);
-        String packageName = cu.getPackageDeclaration().isPresent() ?
-                cu.getPackageDeclaration().get().getNameAsString() : null;
+        String packageName = this.cu.getPackageDeclaration().isPresent() ?
+                this.cu.getPackageDeclaration().get().getNameAsString() : null;
 
-        cu.getTypes().forEach(type -> {
+        this.cu.getTypes().forEach(type -> {
             String functionName = type.getNameAsString();
 
             type.getMethods().forEach(method -> {
@@ -54,13 +51,27 @@ public class CodeExplorer {
     }
 
     public void replaceClassNames() {
-        CompilationUnit cu = JavaParser.parse(code);
-
-        cu.getTypes().forEach(type -> {
+        this.cu.getTypes().forEach(type -> {
             SimpleName simpleName = new SimpleName(type.getNameAsString() + "-modified");
             type.setName(simpleName);
         });
+    }
 
-        code = cu.toString();
+    public void makeFieldsPublic() {
+        this.cu.getTypes().forEach(type -> {
+            type.getFields().forEach(field -> {
+                Optional<FieldDeclaration> fieldDeclaration = field.toFieldDeclaration();
+                if (fieldDeclaration.isPresent()) {
+                    FieldDeclaration declaration = fieldDeclaration.get();
+                    declaration.setPrivate(false);
+                    declaration.setProtected(false);
+                    declaration.setPublic(true);
+                }
+            });
+        });
+    }
+
+    public String currentCode() {
+        return cu.toString();
     }
 }
