@@ -49,7 +49,7 @@ public class TestGenerator {
         return String.join("", Collections.nCopies(tabs, this.IDENTATION));
     }
 
-    String generate() {
+    public String generate() {
         String runner = "";
         runner += this.genPackages();
         runner += this.indented(0, "public class " + testClassName + " {");
