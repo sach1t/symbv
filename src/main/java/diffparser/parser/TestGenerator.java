@@ -35,7 +35,7 @@ public class TestGenerator {
 
     private String genPackages() {
         String pkgs = "package symbv;\n\n";
-        pkgs += "import " + this.codeMethod.getPackageName() + ";\n";
+        pkgs += "import " + this.codeMethod.getPackageName() + ";\n\n";
         return pkgs;
     }
 
@@ -47,11 +47,14 @@ public class TestGenerator {
         return String.join("", Collections.nCopies(tabs, this.IDENTATION));
     }
 
-    String genRunner() {
-        String runner = "public Class " + testClassName + " {";
+    String generate() {
+        String runner = "";
+        runner += this.genPackages();
+        runner += this.indented(0, "public class " + testClassName + " {");
         runner += this.genMainFunction();
+        runner += this.genRunFunction();
+        runner += this.indented(0, "}");
 
-        // TODO: Generate test function
         return runner;
     }
 
