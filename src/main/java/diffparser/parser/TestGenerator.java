@@ -81,27 +81,51 @@ public class TestGenerator {
     String runnerSignatureArguments() {
         List<String> parameters = new ArrayList<>(this.codeMethod.parameterTypes.size());
         this.codeMethod.getParameterTypes().forEach(arg -> {
-            parameters.add(arg.getKey() + " " + arg.getKey());
+            parameters.add(arg.getKey() + " " + arg.getValue());
         });
         return String.join(", ", parameters);
     }
 
+    String methodCallArguments() {
+        List<String> parameters = new ArrayList<>(this.codeMethod.parameterTypes.size());
+        this.codeMethod.getParameterTypes().forEach(arg -> {
+            parameters.add(arg.getValue());
+        });
+        return String.join(",\n" + tabSpaces(3), parameters);
+
+    }
+
     String getConstructor() {
         if (this.symbvConstructor) {
-            return this.testClassName + ".symbv()";
+            return this.codeMethod.getClassName() + ".symbv()";
         } else {
-            return "new " + this.testClassName + "()";
+            return "new " + this.codeMethod.getClassName() + "()";
         }
     }
 
     String genRunFunction() {
         String runFunction = "";
         runFunction += this.indented(1, "public void run(" + this.runnerSignatureArguments() + ") {");
-        runFunction += this.indented(2, this.testClassName + " original = " + this.getConstructor() + ";");
-        runFunction += this.indented(2, this.testClassName + " patched = " + this.getConstructor() + ";");
+        runFunction += this.indented(2, this.codeMethod.getClassName() + " original = " + this.getConstructor() + ";");
+        runFunction += this.indented(2, this.codeMethod.getClassName() + " patched = " + this.getConstructor() + ";");
         runFunction += "\n";
-        runFunction += this.indented(2, this.codeMethod.getReturnType() + " originalResult = original." + this.codeMethod.getOriginalName());
-        //runFunction += this.indented(2, this.codeMethod.getReturnType() + " patchedResult = patched." + this.);
+        runFunction += this.indented(2, this.codeMethod.getReturnType() + " originalResult = original."
+                + this.codeMethod.getOriginalName() + "(" + this.methodCallArguments() + ");");
+
+        runFunction += this.indented(2, this.codeMethod.getReturnType() + " patchedResult = patched."
+                + this.codeMethod.getMethodName() + "(" + this.methodCallArguments() + ");");
+
+        runFunction += "\n";
+        // If from a basic type, just generate a direct comparison.
+        // Use equals otherwise, for objects.
+        if (this.basicTypesValues.containsKey(codeMethod.returnType)) {
+            runFunction += this.indented(2, "if (originalResult == patchedResult) {");
+        } else {
+            runFunction += this.indented(2, "if (originalResult.equals(patchedResult)) {");
+        }
+        runFunction += this.indented(3, "throw new Error();");
+        runFunction += this.indented(2, "}");
+        runFunction += this.indented(1, "}");
 
         return  runFunction;
     }
