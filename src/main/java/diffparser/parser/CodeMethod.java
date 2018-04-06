@@ -4,6 +4,7 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import javafx.util.Pair;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -90,6 +91,10 @@ public class CodeMethod {
 
     public void setOriginalName(String originalName) {
         this.originalName = originalName;
+    }
+
+    public String getCompleteOriginalName() {
+        return this.packageName + "." + this.className + "." + this.originalName;
     }
 
     public List<Pair<String, String>> getParameterTypes() {

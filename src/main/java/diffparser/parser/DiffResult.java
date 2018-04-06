@@ -3,14 +3,24 @@ package main.java.diffparser.parser;
 import java.util.List;
 
 public class DiffResult {
+    private String filepath;
     private String original;
     private String modified;
     private List<Integer> modifiedLines;
 
-    public DiffResult(String original, String modified, List<Integer> modifiedLines) {
+    public DiffResult(String filepath, String original, String modified, List<Integer> modifiedLines) {
+        this.filepath = filepath;
         this.original = original;
         this.modified = modified;
         this.modifiedLines = modifiedLines;
+    }
+
+    public String getFilepath() {
+        return filepath;
+    }
+
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
     }
 
     public String getOriginal() {

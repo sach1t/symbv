@@ -3,9 +3,15 @@ package main.java.diffparser.parser;
 import java.util.List;
 
 public class DiffResultBuilder {
+    private String filepath;
     private String original;
     private String modified;
     private List<Integer> modifiedLines;
+
+    public DiffResultBuilder setFilepath(String filepath) {
+        this.filepath = filepath;
+        return this;
+    }
 
     public DiffResultBuilder setOriginal(String original) {
         this.original = original;
@@ -23,6 +29,6 @@ public class DiffResultBuilder {
     }
 
     public DiffResult createDiffResult() {
-        return new DiffResult(original, modified, modifiedLines);
+        return new DiffResult(filepath, original, modified, modifiedLines);
     }
 }
