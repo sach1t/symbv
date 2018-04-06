@@ -9,7 +9,8 @@ import java.util.List;
 
 
 public class CodeExplorerTest {
-    String codeSimple = "class X {" +
+    String codeSimple = "package k;" +
+            "\nclass X {" +
             "\n  int field;" +
             "\n  void m (){ " +
             "\n    field = 0;" +
@@ -62,7 +63,7 @@ public class CodeExplorerTest {
 
     @Test
     public void shouldReturnEmptyIfClassNameChanged() {
-        modifiedLines.add(1);
+        modifiedLines.add(2);
 
         List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
         Assert.assertEquals(0, modified.size());
@@ -70,29 +71,29 @@ public class CodeExplorerTest {
 
     @Test
     public void shouldFindOneModifiedFunction() {
-        modifiedLines.add(4);
-
-        List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
-        Assert.assertEquals(1, modified.size());
-        Assert.assertEquals(true, modified.contains("X.m"));
-    }
-
-    @Test
-    public void shouldFindModifiedFunctionName() {
-        modifiedLines.add(3);
-
-        List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
-        Assert.assertEquals(1, modified.size());
-        Assert.assertEquals(true, modified.contains("X.m"));
-    }
-
-    @Test
-    public void shouldFindModifiedFunctionLastLine() {
         modifiedLines.add(5);
 
         List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
         Assert.assertEquals(1, modified.size());
-        Assert.assertEquals(true, modified.contains("X.m"));
+        Assert.assertEquals(true, modified.contains("k.X.m"));
+    }
+
+    @Test
+    public void shouldFindModifiedFunctionName() {
+        modifiedLines.add(4);
+
+        List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
+        Assert.assertEquals(1, modified.size());
+        Assert.assertEquals(true, modified.contains("k.X.m"));
+    }
+
+    @Test
+    public void shouldFindModifiedFunctionLastLine() {
+        modifiedLines.add(6);
+
+        List<String> modified = ceSimple.findModifiedMethods(modifiedLines);
+        Assert.assertEquals(1, modified.size());
+        Assert.assertEquals(true, modified.contains("k.X.m"));
     }
 
     @Test
@@ -150,8 +151,8 @@ public class CodeExplorerTest {
     @Test
     public void shouldInsertMethodCorrectly() {
         try {
-            CodeMethod codeMethod = ceSimple.findCodeMethod("X.m");
-            ceMultipleMethods.includeMethod("X.m2", codeMethod);
+            CodeMethod codeMethod = ceSimple.findCodeMethod("k.X.m");
+            ceMultipleMethods.includeMethod("dream.was.so.big.X.m2", codeMethod);
 
             String expected = codeMultipleMethods
                     .replace("}}",
