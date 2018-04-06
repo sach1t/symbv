@@ -1,6 +1,8 @@
-package main.java.diffparser.parser;
+package main.java.diffparser.generator;
 
 import javafx.util.Pair;
+import main.java.diffparser.generator.TestGenerator;
+import main.java.diffparser.parser.CodeMethod;
 import org.junit.Assert;
 import org.junit.Test;
 
