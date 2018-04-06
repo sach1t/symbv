@@ -1,4 +1,6 @@
-package main.java.diffparser.parser;
+package main.java.diffparser.generator;
+
+import main.java.diffparser.parser.CodeMethod;
 
 import java.util.*;
 
@@ -59,7 +61,7 @@ public class TestGenerator {
     }
 
     String runnerCallArguments() {
-        List<String> parameters = new ArrayList<>(this.codeMethod.parameterTypes.size());
+        List<String> parameters = new ArrayList<>(this.codeMethod.getParameterTypes().size());
         this.codeMethod.getParameterTypes().forEach(arg -> {
             String type = arg.getKey();
             if (TestGenerator.basicTypesValues.containsKey(type)) {
@@ -82,7 +84,7 @@ public class TestGenerator {
     }
 
     String runnerSignatureArguments() {
-        List<String> parameters = new ArrayList<>(this.codeMethod.parameterTypes.size());
+        List<String> parameters = new ArrayList<>(this.codeMethod.getParameterTypes().size());
         this.codeMethod.getParameterTypes().forEach(arg -> {
             parameters.add(arg.getKey() + " " + arg.getValue());
         });
@@ -90,7 +92,7 @@ public class TestGenerator {
     }
 
     String methodCallArguments() {
-        List<String> parameters = new ArrayList<>(this.codeMethod.parameterTypes.size());
+        List<String> parameters = new ArrayList<>(this.codeMethod.getParameterTypes().size());
         this.codeMethod.getParameterTypes().forEach(arg -> {
             parameters.add(arg.getValue());
         });
@@ -121,7 +123,7 @@ public class TestGenerator {
         runFunction += "\n";
         // If from a basic type, just generate a direct comparison.
         // Use equals otherwise, for objects.
-        if (this.basicTypesValues.containsKey(codeMethod.returnType)) {
+        if (this.basicTypesValues.containsKey(codeMethod.getReturnType())) {
             runFunction += this.indented(2, "if (originalResult == patchedResult) {");
         } else {
             runFunction += this.indented(2, "if (originalResult.equals(patchedResult)) {");
