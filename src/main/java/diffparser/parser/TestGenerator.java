@@ -3,21 +3,19 @@ package main.java.diffparser.parser;
 import java.util.*;
 
 public class TestGenerator {
-    public static final Map<String, String> initialValues = new HashMap<>();
+    public static final Map<String, String> basicTypesValues = new HashMap<>();
     static {
-        initialValues.put("byte", "0");
-        initialValues.put("short", "0");
-        initialValues.put("int", "0");
-        initialValues.put("long", "0");
-        initialValues.put("float", "0");
-        initialValues.put("double", "0");
-        initialValues.put("boolean", "true");
-        initialValues.put("char", "'\\u0000'");
+        basicTypesValues.put("byte", "0");
+        basicTypesValues.put("short", "0");
+        basicTypesValues.put("int", "0");
+        basicTypesValues.put("long", "0");
+        basicTypesValues.put("float", "0");
+        basicTypesValues.put("double", "0");
+        basicTypesValues.put("boolean", "true");
+        basicTypesValues.put("char", "'\\u0000'");
     }
 
     CodeMethod codeMethod;
-
-    String packageName;
     String testClassName;
 
     static final String PACKAGE_SEPARATOR = "_";
@@ -29,40 +27,15 @@ public class TestGenerator {
 
     public TestGenerator(CodeMethod codeMethod, boolean symbvConstructor) throws Exception {
         this.codeMethod = codeMethod;
-        String[] parts = this.splitCompleteName(codeMethod.getCompleteName());
-
-        this.packageName = parts[0];
-        String className = parts[1];
-        String methodName = parts[2];
-        this.testClassName = this.packageName.replace(".", this.PACKAGE_SEPARATOR) + this.CLASS_SEPARATOR
-                + className + this.CLASS_SEPARATOR + methodName;
+        this.testClassName = codeMethod.getPackageName().replace(".", this.PACKAGE_SEPARATOR) + this.CLASS_SEPARATOR
+                + codeMethod.getClassName() + this.CLASS_SEPARATOR + codeMethod.getMethodName();
 
         this.symbvConstructor = symbvConstructor;
     }
 
-    static String[] splitCompleteName(String completeName) throws Exception {
-        String[] parts = new String[3];
-
-        int indexMethod = completeName.lastIndexOf(".");
-        int indexClass = completeName.lastIndexOf(".", indexMethod-1);
-        int length = completeName.length();
-
-        // Minimum requirements for having something for each field.
-        if (indexMethod < 3 || indexMethod > length - 2 ||
-                indexClass < 1 || indexClass > length -4) {
-            throw new Error("Should receive at least package, class and method names");
-        }
-
-        parts[0] = completeName.substring(0, indexClass);
-        parts[1] = completeName.substring(indexClass + 1, indexMethod);
-        parts[2] = completeName.substring(indexMethod + 1, length);
-
-        return parts;
-    }
-
     private String genPackages() {
         String pkgs = "package symbv;\n\n";
-        pkgs += "import " + this.packageName + ";\n";
+        pkgs += "import " + this.codeMethod.getPackageName() + ";\n";
         return pkgs;
     }
 
@@ -82,12 +55,12 @@ public class TestGenerator {
         return runner;
     }
 
-    String runnerArguments() {
+    String runnerCallArguments() {
         List<String> parameters = new ArrayList<>(this.codeMethod.parameterTypes.size());
         this.codeMethod.getParameterTypes().forEach(arg -> {
             String type = arg.getKey();
-            if (TestGenerator.initialValues.containsKey(type)) {
-                parameters.add(TestGenerator.initialValues.get(type));
+            if (TestGenerator.basicTypesValues.containsKey(type)) {
+                parameters.add(TestGenerator.basicTypesValues.get(type));
             } else {
                 // If don't know how to initialize it, just construct an object.
                 parameters.add("new " + type + "()");
@@ -100,8 +73,36 @@ public class TestGenerator {
         String mainFunction = "";
         mainFunction += this.indented(1, "public static void main(String args[]) {");
         mainFunction += this.indented(2, this.testClassName + " t = new " + this.testClassName + "();");
-        mainFunction += this.indented(2, "t.test(" + this.runnerArguments() + ");");    // Call with right parameters
+        mainFunction += this.indented(2, "t.run(" + this.runnerCallArguments() + ");");    // Call with right parameters
         mainFunction += this.indented(1, "}");
         return mainFunction;
+    }
+
+    String runnerSignatureArguments() {
+        List<String> parameters = new ArrayList<>(this.codeMethod.parameterTypes.size());
+        this.codeMethod.getParameterTypes().forEach(arg -> {
+            parameters.add(arg.getKey() + " " + arg.getKey());
+        });
+        return String.join(", ", parameters);
+    }
+
+    String getConstructor() {
+        if (this.symbvConstructor) {
+            return this.testClassName + ".symbv()";
+        } else {
+            return "new " + this.testClassName + "()";
+        }
+    }
+
+    String genRunFunction() {
+        String runFunction = "";
+        runFunction += this.indented(1, "public void run(" + this.runnerSignatureArguments() + ") {");
+        runFunction += this.indented(2, this.testClassName + " original = " + this.getConstructor() + ";");
+        runFunction += this.indented(2, this.testClassName + " patched = " + this.getConstructor() + ";");
+        runFunction += "\n";
+        runFunction += this.indented(2, this.codeMethod.getReturnType() + " originalResult = original." + this.codeMethod.getOriginalName());
+        //runFunction += this.indented(2, this.codeMethod.getReturnType() + " patchedResult = patched." + this.);
+
+        return  runFunction;
     }
 }
