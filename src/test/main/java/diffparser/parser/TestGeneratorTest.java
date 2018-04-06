@@ -1,5 +1,6 @@
 package main.java.diffparser.parser;
 
+import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,9 +32,9 @@ public class TestGeneratorTest {
 
     @Test
     public void shouldGenerateTestFunctionCorrectly() throws Exception {
-        List<String> args = Arrays.asList("int", "boolean", "otherClass");
+        List<Pair<String, String>> args = Arrays.asList(new Pair("int", "arg1"), new Pair("boolean", "arg2"), new Pair("otherClass", "arg3"));
         CodeMethod codeMethod = new CodeMethod("aaa.b.c", args, null, null);
-        TestGenerator testGenerator = new TestGenerator(codeMethod);
+        TestGenerator testGenerator = new TestGenerator(codeMethod, false);
 
         String type = "aaa" + TestGenerator.CLASS_SEPARATOR + "b" + TestGenerator.CLASS_SEPARATOR + "c";
         String expected = "public static void main(String args[]) {\n " + type + " t = new " + type + " ();\n"
