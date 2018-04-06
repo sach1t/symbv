@@ -24,7 +24,10 @@ public class TestGenerator {
     static final String CLASS_SEPARATOR = "___";
     static final String IDENTATION = "    ";
 
-    public TestGenerator(CodeMethod codeMethod) throws Exception {
+    // If has a static construct named symbv that should be used instead of the default one.
+    boolean symbvConstructor;
+
+    public TestGenerator(CodeMethod codeMethod, boolean symbvConstructor) throws Exception {
         this.codeMethod = codeMethod;
         String[] parts = this.splitCompleteName(codeMethod.getCompleteName());
 
@@ -33,6 +36,8 @@ public class TestGenerator {
         String methodName = parts[2];
         this.testClassName = this.packageName.replace(".", this.PACKAGE_SEPARATOR) + this.CLASS_SEPARATOR
                 + className + this.CLASS_SEPARATOR + methodName;
+
+        this.symbvConstructor = symbvConstructor;
     }
 
     static String[] splitCompleteName(String completeName) throws Exception {
@@ -79,12 +84,13 @@ public class TestGenerator {
 
     String runnerArguments() {
         List<String> parameters = new ArrayList<>(this.codeMethod.parameterTypes.size());
-        this.codeMethod.getParameterTypes().forEach(t -> {
-            if (TestGenerator.initialValues.containsKey(t)) {
-                parameters.add(TestGenerator.initialValues.get(t));
+        this.codeMethod.getParameterTypes().forEach(arg -> {
+            String type = arg.getKey();
+            if (TestGenerator.initialValues.containsKey(type)) {
+                parameters.add(TestGenerator.initialValues.get(type));
             } else {
                 // If don't know how to initialize it, just construct an object.
-                parameters.add("new " + t + "()");
+                parameters.add("new " + type + "()");
             }
         });
         return String.join(",\n" + tabSpaces(3), parameters);

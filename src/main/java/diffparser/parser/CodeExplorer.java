@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.SimpleName;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -103,10 +104,10 @@ public class CodeExplorer {
 
         // TODO: Deal with overloads
         MethodDeclaration methodDeclaration = declarations.get(0);
-        List<String> parameterTypes = new ArrayList<>();
+        List<Pair<String, String>> parameterTypes = new ArrayList<>();
 
         methodDeclaration.getParameters().forEach(parameter -> {
-            parameterTypes.add(parameter.getType().asString());
+            parameterTypes.add(new Pair(parameter.getType().asString(), parameter.getName()));
         });
 
         return new CodeMethod(completeName, parameterTypes, methodDeclaration.getModifiers(), methodDeclaration.getBody());
