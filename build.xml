@@ -26,7 +26,7 @@
   <property file="${jpf.site}"/>
 
   <!-- otherwise we use the parent dir and the global ~/.jpf as fallback -->
-  <property file="../site.properties"/>  
+  <property file="site.properties"/>
   <property file="${user.home}/.jpf/site.properties"/>
 
   <fail unless="jpf-core">no jpf-core location set, check site.properties</fail>
