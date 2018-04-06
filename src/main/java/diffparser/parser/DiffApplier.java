@@ -40,7 +40,7 @@ public class DiffApplier {
             }
 
             if (line.startsWith("diff --git")) {
-                // Starting a new diff, get new and old filename, remove initial "a" or "b"
+                // Starting a new diff, get new and old testClassName, remove initial "a" or "b"
                 String[] tokens = line.split(" ");
                 newFilename = tokens[tokens.length-1];
                 newFilename = newFilename.substring(2, newFilename.length());
@@ -58,7 +58,7 @@ public class DiffApplier {
                 currentPatch = currentPatch + line + "\n";
             }
 
-            // Starting a new patch, should start reading if the filename is the same
+            // Starting a new patch, should start reading if the testClassName is the same
             if (line.startsWith("+++") && oldFilename.equals(newFilename)) {
                 reading = true;
             }

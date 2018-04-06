@@ -103,7 +103,13 @@ public class CodeExplorer {
 
         // TODO: Deal with overloads
         MethodDeclaration methodDeclaration = declarations.get(0);
-        return new CodeMethod(methodDeclaration.getModifiers(), methodDeclaration.getBody());
+        List<String> parameterTypes = new ArrayList<>();
+
+        methodDeclaration.getParameters().forEach(parameter -> {
+            parameterTypes.add(parameter.getType().asString());
+        });
+
+        return new CodeMethod(completeName, parameterTypes, methodDeclaration.getModifiers(), methodDeclaration.getBody());
     }
 
     public void replaceClassNames() {
