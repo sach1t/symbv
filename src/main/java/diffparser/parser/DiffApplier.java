@@ -14,6 +14,19 @@ public class DiffApplier {
         this.fileManager = fileManager;
     }
 
+    public Map<String, String> splitGitPatchFile(String filepath) {
+        String gitPatch;
+
+        try {
+            gitPatch = fileManager.readFile(filepath);
+        } catch (IOException e) {
+            System.out.println("Can't open file: " + filepath);
+            return null;
+        }
+
+        return this.splitGitPatch(gitPatch);
+    }
+
     protected Map<String, String> splitGitPatch(String gitPatchText) {
         final Map<String, String> patches = new HashMap<>();
 
@@ -80,7 +93,7 @@ public class DiffApplier {
         }
     }
 
-    protected DiffResult applyPatch(String filepath, String patch) {
+    public DiffResult applyPatch(String filepath, String patch) {
         String original;
 
         try {

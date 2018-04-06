@@ -60,6 +60,22 @@ public class CodeMethod {
         return parts;
     }
 
+    public boolean hasSameParameters(CodeMethod other) {
+        List<Pair<String, String>> otherParameterTypes = other.getParameterTypes();
+
+        if (this.parameterTypes.size() != otherParameterTypes.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < otherParameterTypes.size(); i++) {
+            if (!this.parameterTypes.get(i).getKey().equals(otherParameterTypes.get(i).getKey())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public String getCompleteName() {
         return completeName;
     }
