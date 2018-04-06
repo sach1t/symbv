@@ -5,10 +5,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 
 public class TestGeneratorTest {
+    CodeMethod codeMethod = new CodeMethod("aaa.b.c",
+            Arrays.asList(new Pair("int", "arg1"), new Pair("boolean", "arg2"), new Pair("otherClass", "arg3")),
+            "int", null, null);
+
+    public TestGeneratorTest() throws Exception {
+    }
+
     private String noSpacings(String code) {
         return code
                 .replace("\n", "")
@@ -17,9 +23,7 @@ public class TestGeneratorTest {
 
     @Test
     public void shouldGenerateMainFunctionCorrectly() throws Exception {
-        List<Pair<String, String>> args = Arrays.asList(new Pair("int", "arg1"), new Pair("boolean", "arg2"), new Pair("otherClass", "arg3"));
-        CodeMethod codeMethod = new CodeMethod("aaa.b.c", args, "NOT_NEEDED", null, null);
-        TestGenerator testGenerator = new TestGenerator(codeMethod, false);
+        TestGenerator testGenerator = new TestGenerator(this.codeMethod, false);
 
         String type = "aaa" + TestGenerator.CLASS_SEPARATOR + "b" + TestGenerator.CLASS_SEPARATOR + "c";
         String expected = "public static void main(String args[]) {\n " + type + " t = new " + type + " ();\n"
@@ -30,10 +34,8 @@ public class TestGeneratorTest {
 
     @Test
     public void shouldGenerateRunFunctionCorrectly() throws Exception {
-        List<Pair<String, String>> args = Arrays.asList(new Pair("int", "arg1"), new Pair("boolean", "arg2"), new Pair("otherClass", "arg3"));
-        CodeMethod codeMethod = new CodeMethod("aaa.b.c", args, "int", null, null);
         codeMethod.setOriginalName("c___original");
-        TestGenerator testGenerator = new TestGenerator(codeMethod, false);
+        TestGenerator testGenerator = new TestGenerator(this.codeMethod, false);
 
         String expected = "public void run(int arg1, boolean arg2, otherClass arg3) {\n "
                 + "b original = new b();"
@@ -47,5 +49,20 @@ public class TestGeneratorTest {
                 + "}}";
 
         Assert.assertEquals(noSpacings(expected), noSpacings(testGenerator.genRunFunction()));
+    }
+
+    @Test
+    public void shouldGenerateTestCorrectly() throws Exception {
+        codeMethod.setOriginalName("c___original");
+        TestGenerator testGenerator = new TestGenerator(this.codeMethod, false);
+
+        String expected = "package symbv;\n" +
+                "import " + "aaa;\n" +
+                "public class aaa___b___c {" +
+                testGenerator.genMainFunction() +
+                testGenerator.genRunFunction() +
+                "}";
+
+        Assert.assertEquals(noSpacings(expected), noSpacings(testGenerator.generate()));
     }
 }
