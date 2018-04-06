@@ -12,7 +12,7 @@ import javafx.util.Pair;
 import java.util.*;
 
 public class CodeExplorer {
-    final static String CLASS_MODIFIER = "___original";
+    final static String NAME_MODIFIER = "___original";
     CompilationUnit cu;
 
     public CodeExplorer(String code) {
@@ -110,13 +110,15 @@ public class CodeExplorer {
             parameterTypes.add(new Pair(parameter.getType().asString(), parameter.getName()));
         });
 
-        return new CodeMethod(completeName, parameterTypes, methodDeclaration.getType().asString(),
+        CodeMethod result = new CodeMethod(completeName, parameterTypes, methodDeclaration.getType().asString(),
                 methodDeclaration.getModifiers(), methodDeclaration.getBody());
+        result.setOriginalName(result.methodName + this.NAME_MODIFIER);
+        return result;
     }
 
     public void replaceClassNames() {
         this.cu.getTypes().forEach(type -> {
-            SimpleName simpleName = new SimpleName(type.getNameAsString() + this.CLASS_MODIFIER);
+            SimpleName simpleName = new SimpleName(type.getNameAsString() + this.NAME_MODIFIER);
             type.setName(simpleName);
         });
     }

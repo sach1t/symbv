@@ -120,7 +120,7 @@ public class CodeExplorerTest {
         ceMultipleMethods.replaceClassNames();
         String replaced = ceMultipleMethods.currentCode();
 
-        String expectedLines = codeMultipleMethods.replaceAll("X", "X" + CodeExplorer.CLASS_MODIFIER);
+        String expectedLines = codeMultipleMethods.replaceAll("X", "X" + CodeExplorer.NAME_MODIFIER);
 
         Assert.assertEquals(noSpacings(expectedLines), noSpacings(replaced));
     }
@@ -130,8 +130,8 @@ public class CodeExplorerTest {
         ceMultipleClasses.replaceClassNames();
         String replaced = ceMultipleClasses.currentCode();
 
-        String expectedLines = codeMultipleClasses.replaceAll("tss", "tss" + CodeExplorer.CLASS_MODIFIER)
-                .replaceAll("tws", "tws" + CodeExplorer.CLASS_MODIFIER);
+        String expectedLines = codeMultipleClasses.replaceAll("tss", "tss" + CodeExplorer.NAME_MODIFIER)
+                .replaceAll("tws", "tws" + CodeExplorer.NAME_MODIFIER);
 
         Assert.assertEquals(noSpacings(expectedLines), noSpacings(replaced));
     }

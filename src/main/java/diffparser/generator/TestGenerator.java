@@ -134,4 +134,8 @@ public class TestGenerator {
 
         return  runFunction;
     }
+
+    public String getTestFilename() {
+        return this.testClassName + ".java";
+    }
 }

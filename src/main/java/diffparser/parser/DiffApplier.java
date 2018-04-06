@@ -170,6 +170,7 @@ public class DiffApplier {
         }
 
         return new DiffResultBuilder()
+                .setFilepath(filepath)
                 .setOriginal(original)
                 .setModified(modifiedFile)
                 .setModifiedLines(modifiedLines)
