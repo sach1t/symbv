@@ -11,6 +11,7 @@ public class SymbvConfig {
     private String METHOD_CONFIG = "fun";
     private String CONSTRAINTS_CONFIG = METHOD_CONFIG + "_constraints";
     private String ALL_FIELDS_SYMBOLIC_CONFIG = METHOD_CONFIG + "_all_fields_symbolic";
+    private String MAX_ALT_DEPTH_CONFIG = METHOD_CONFIG + "_alt_depth";
 
     private String CONCOLIC_PREFIX = "concolic.method";
     private String ANALYSIS_PREFIX = "jdart.configs";
@@ -38,9 +39,26 @@ public class SymbvConfig {
     }
 
     public void setConcolicMethod(String FQClassName, String methodSpec) {
+        // validate settings
+
+        int startParam = methodSpec.indexOf('(');
+        int endParam = methodSpec.indexOf(')');
+        if ((startParam + 1) != endParam) { // i.e. there are some parameters
+            String parameters = methodSpec.substring(startParam + 1, endParam);
+            if (!(parameters.contains(":"))) {
+                throw new SymbvConfig.ConfigurationError("Parameter list is not formatted correctly.");
+            }
+        }
+
         config.setProperty("target", FQClassName);
         config.setProperty(CONCOLIC_PREFIX + "." + METHOD_CONFIG, FQClassName + "." + methodSpec);
         config.setProperty(CONCOLIC_PREFIX, METHOD_CONFIG);
+    }
+
+    public void setMaxAltDepth(int depth) {
+        config.setProperty(ANALYSIS_PREFIX + "." + MAX_ALT_DEPTH_CONFIG + ".max_alt_depth", Integer.toString(depth));
+        methodConfigs.add(MAX_ALT_DEPTH_CONFIG);
+        updateMethodConfigProperty();
     }
 
     public void setInstanceFieldsSymbolic() {
@@ -106,4 +124,11 @@ public class SymbvConfig {
 
         return sb.toString();
     }
+
+    public static class ConfigurationError extends Error {
+        public ConfigurationError(String errorMsg) {
+            super(errorMsg);
+        }
+    }
+
 }
