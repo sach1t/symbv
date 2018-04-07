@@ -8,13 +8,16 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class SymbvConfig {
-    private String METHOD_CONFIG = "fun";
-    private String CONSTRAINTS_CONFIG = METHOD_CONFIG + "_constraints";
-    private String ALL_FIELDS_SYMBOLIC_CONFIG = METHOD_CONFIG + "_all_fields_symbolic";
-    private String MAX_ALT_DEPTH_CONFIG = METHOD_CONFIG + "_alt_depth";
+    private static String METHOD_CONFIG = "fun";
+    private static String CONSTRAINTS_CONFIG = METHOD_CONFIG + "_constraints";
+    private static String ALL_FIELDS_SYMBOLIC_CONFIG = METHOD_CONFIG + "_all_fields_symbolic";
+    private static String MAX_ALT_DEPTH_CONFIG = METHOD_CONFIG + "_alt_depth";
 
-    private String CONCOLIC_PREFIX = "concolic.method";
-    private String ANALYSIS_PREFIX = "jdart.configs";
+    static String CONCOLIC_PREFIX = "concolic.method";
+    static String ANALYSIS_PREFIX = "jdart.configs";
+    static String TEST_PREFIX = "symbv.test";
+
+    public int testNumber;
 
     private Config config;
     private JPFLogger logger = JPF.getLogger("symbv");
@@ -36,6 +39,11 @@ public class SymbvConfig {
     private void setDefaults() {
         config.setProperty("symbolic.dp", "z3");
         config.setProperty("symbolic.dp.z3.bitvectors", "true");
+    }
+
+    public void setConcolicMethod(String FQClassName, String methodSpec, int testNumber) {
+        this.testNumber = testNumber;
+        setConcolicMethod(FQClassName, methodSpec);
     }
 
     public void setConcolicMethod(String FQClassName, String methodSpec) {
