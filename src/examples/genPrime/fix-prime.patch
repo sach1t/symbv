@@ -1,0 +1,34 @@
+From 0f6fa8ade23090ae9f18522db97d7ad7d66875ac Mon Sep 17 00:00:00 2001
+From: albf <albf.unicamp@gmail.com>
+Date: Sun, 8 Apr 2018 02:06:33 -0400
+Subject: [PATCH] fix-prime
+
+---
+ prime.java | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/prime.java b/prime.java
+index 1b58f5e..07111ab 100644
+--- a/prime.java
++++ b/prime.java
+@@ -2,7 +2,16 @@ package genPrime;
+ 
+ public class prime {
+     public boolean isPrime(int value) {
+-        for (int i = value-1; i > 1; i--) {
++        // consider negative, 0, 1 and 2 as a special case.
++        if (value <= 1) {
++            return false;
++        } else if(value == 2) {
++            return true;
++        }
++
++        // get square root and only loop up to that value.
++        int squareRoot = new Double(Math.ceil(Math.sqrt(value))).intValue();
++        for (int i = 2; i <= squareRoot; i++) {
+             if ((value % i) == 0) {
+                 return false;
+             }
+-- 
+2.11.0
+
