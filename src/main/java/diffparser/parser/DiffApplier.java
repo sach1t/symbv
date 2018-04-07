@@ -1,6 +1,6 @@
 package main.java.diffparser.parser;
 
-import diffparser.io.FileManager;
+import main.java.diffparser.io.FileManager;
 
 import java.io.IOException;
 import java.util.*;
