@@ -40,31 +40,25 @@ public class Symbv implements JPFShell {
                 patcher.setBasePackage(fileManager.getParentName(args[2]));
                 patcher.setJpfFile(fileManager.getFileName(args[0]));
                 patcher.apply(fileManager.getFileName(args[2]));
+                logger.info("Generation completed");
                 break;
 
             case "exec":
-                // this information can be gotten using JavaParser
-                String target = "simple2.Runner"; // fully qualified class name
-                String methodSpec = "run(i: int)"; // run method
-
-				List<SymbvConfig> sConfs = null;
-				try {
-					sConfs = TestConfigGenerator.parseConfig(config);
-				} catch (InvalidPropertiesFormatException e) {
-					e.printStackTrace();
-				}
-				sConfs.forEach(SymbvConfig::setInstanceFieldsSymbolic);
-				sConfs.forEach(this::run);
-
-                SymbvConfig sConf = new SymbvConfig(config);
-                sConf.setConcolicMethod(target, methodSpec);
-                sConf.setInstanceFieldsSymbolic();
-                run(sConf);
+                List<SymbvConfig> sConfs = null;
+                try {
+                    sConfs = TestConfigGenerator.parseConfig(config);
+                } catch (InvalidPropertiesFormatException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                sConfs.forEach(s ->{
+                    s.setInstanceFieldsSymbolic();
+                    run(s);
+                });
                 break;
 
             default:
                 this.logger.warning("Unknown step " + args[1] + " argument passed (should use gen or exec)");
-                return;
         }
     }
 
