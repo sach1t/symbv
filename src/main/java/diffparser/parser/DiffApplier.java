@@ -1,4 +1,4 @@
-package diffparser.parser;
+package main.java.diffparser.parser;
 
 import diffparser.io.FileManager;
 
