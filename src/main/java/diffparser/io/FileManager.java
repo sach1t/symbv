@@ -1,4 +1,4 @@
-package diffparser.io;
+package main.java.diffparser.io;
 
 import java.io.IOException;
 import java.nio.file.Files;

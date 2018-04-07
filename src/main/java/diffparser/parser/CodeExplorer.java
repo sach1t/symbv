@@ -1,4 +1,4 @@
-package diffparser.parser;
+package main.java.diffparser.parser;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;

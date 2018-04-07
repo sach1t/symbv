@@ -1,4 +1,4 @@
-package diffparser.parser;
+package main.java.diffparser.parser;
 
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -17,7 +17,7 @@ public class LineInterval {
     public static LineInterval convert(Optional<Position> begin, Optional<Position> end) {
         if (begin == null || end == null ||
                 !begin.isPresent() || !end.isPresent()) {
-            return null;
+            return null
         }
 
         return new LineInterval(begin.get().line, end.get().line);
