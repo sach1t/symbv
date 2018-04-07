@@ -59,7 +59,7 @@ public class TestGeneratorTest {
         TestGenerator testGenerator = new TestGenerator(this.codeMethod, false);
 
         String expected = "package symbv;\n" +
-                "import " + "aaa;\n" +
+                "import " + "aaa.b;\n" +
                 "public class aaa___b___c {" +
                 testGenerator.genMainFunction() +
                 testGenerator.genRunFunction() +
