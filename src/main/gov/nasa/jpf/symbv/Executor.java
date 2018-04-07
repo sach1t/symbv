@@ -29,11 +29,15 @@ public class Executor {
                     sconf.addMethodConstraints(v.getName() + "!=" + p.getValuation().getValue(v));
                 }
             }
-            logger.warning("CONSTRAINTSCONSTRAINTS");
+            logger.warning("CONSTRAINTS");
+            logger.warning("-----------");
             logger.warning(Arrays.asList(sconf.getMethodConstraints()));
         });
         logger.warning(Arrays.asList(sconf.getMethodConstraints()));
         return null;
     }
 
+    public SymbvConfig getSconf() {
+        return sconf;
+    }
 }
