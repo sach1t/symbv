@@ -7,7 +7,7 @@ import gov.nasa.jpf.util.JPFLogger;
 import gov.nasa.jpf.util.LogManager;
 
 
-public class  Symbv implements JPFShell {
+public class Symbv implements JPFShell {
     private Config config;
     private JPFLogger logger;
 

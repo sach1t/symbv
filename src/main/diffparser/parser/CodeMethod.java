@@ -1,4 +1,4 @@
-package main.java.diffparser.parser;
+package diffparser.parser;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.stmt.BlockStmt;

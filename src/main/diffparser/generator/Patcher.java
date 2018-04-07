@@ -1,10 +1,10 @@
-package main.java.diffparser.generator;
+package diffparser.generator;
 
-import main.java.diffparser.io.FileManager;
-import main.java.diffparser.parser.CodeExplorer;
-import main.java.diffparser.parser.CodeMethod;
-import main.java.diffparser.parser.DiffApplier;
-import main.java.diffparser.parser.DiffResult;
+import diffparser.io.FileManager;
+import diffparser.parser.CodeExplorer;
+import diffparser.parser.CodeMethod;
+import diffparser.parser.DiffApplier;
+import diffparser.parser.DiffResult;
 
 import java.util.*;
 
