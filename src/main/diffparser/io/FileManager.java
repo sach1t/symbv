@@ -1,5 +1,6 @@
 package diffparser.io;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,5 +15,12 @@ public class FileManager {
     public void writeFile(String filepath, String content) throws FileNotFoundException {
         PrintWriter out = new PrintWriter(filepath);
         out.print(content);
+    }
+
+    public void createDirectory(String dirpath) {
+        File directory = new File(dirpath);
+        if (!directory.exists()){
+            directory.mkdir();
+        }
     }
 }

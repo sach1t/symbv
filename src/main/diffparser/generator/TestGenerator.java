@@ -23,6 +23,7 @@ public class TestGenerator {
     static final String PACKAGE_SEPARATOR = "_";
     static final String CLASS_SEPARATOR = "___";
     static final String IDENTATION = "    ";
+    static final String PACKAGE_NAME = "symbv";
 
     // If has a static construct named symbv that should be used instead of the default one.
     boolean symbvConstructor;
@@ -36,7 +37,7 @@ public class TestGenerator {
     }
 
     private String genPackages() {
-        String pkgs = "package symbv;\n\n";
+        String pkgs = "package " + this.PACKAGE_NAME + ";\n\n";
         pkgs += "import " + this.codeMethod.getPackageName() + "." + this.codeMethod.getClassName() + ";\n\n";
         return pkgs;
     }

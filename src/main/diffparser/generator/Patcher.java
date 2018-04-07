@@ -27,6 +27,9 @@ public class Patcher {
             diffResults.add(this.diffApplier.applyPatch(k, v));
         });
 
+        // Create symbv directory if it doesn't exist
+        this.fileManager.createDirectory(TestGenerator.PACKAGE_NAME);
+
         // Explore each diff result
         diffResults.forEach(diffResult -> {
             this.createClassTests(diffResult);
@@ -60,7 +63,7 @@ public class Patcher {
                     // TODO: Check for symbv constructor
                     TestGenerator testGenerator = new TestGenerator(modifiedCodeMethod, false);
                     String test = testGenerator.generate();
-                    this.fileManager.writeFile(testGenerator.getTestFilename(), test);
+                    this.fileManager.writeFile(TestGenerator.PACKAGE_NAME + "/" + testGenerator.getTestFilename(), test);
                 }
             }
 
