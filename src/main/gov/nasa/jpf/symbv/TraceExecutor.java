@@ -1,5 +1,10 @@
 package gov.nasa.jpf.symbv;
 
+/*
+Issues encountered with implementation:
+    - injecting values onto heap for each run
+    - getting path results
+*/
 public class TraceExecutor {
     Executor exA, exB;
 
@@ -9,11 +14,10 @@ public class TraceExecutor {
     }
 
     public ExecutionResult run() {
-
-        exB.getSconf().setMaxAltDepth(0);
-        ExecutionResult erB = exB.run();
-
         exA.getSconf().setMaxAltDepth(0);
+        exB.getSconf().setMaxAltDepth(0);
+
+        ExecutionResult erB = exB.run();
         ExecutionResult erA = exA.run();
 
         erA.ce.getCompletedAnalyses().forEach((method,completedAnalyses) -> {
@@ -32,24 +36,9 @@ public class TraceExecutor {
             });
         });
 
-        // PROBLEM: injecting values onto VM stack for each run.
-
+        // Example:
         // (((('pedalCmd' + 1) + 1) == 2) && (('bSwitch' == 0) && ('pedalPos' <= 0)))
         // (((('pedalCmd' + 1) + 1) == 2) && (('bSwitch' == 0) && ('pedalPos' == 0)))
-
-        // tree requires backwards transversal
-        // (('pedalPos' < 160) && (('pedalPos' < 40) && (('pedalPos' < 20) && (('pedalPos' < 10) && ('pedalPos' <= 0)))))
-        //        if (pedalPos <= 0) {
-        //            if (pedalPos < 10) {
-        //                if (pedalPos < 20) {
-        //                    if (pedalPos < 40) {
-        //                        if (pedalPos < 160) {
-        //                            bSwitch = 2;
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
 
         return null;
     }
