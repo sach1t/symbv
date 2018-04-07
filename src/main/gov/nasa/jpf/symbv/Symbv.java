@@ -64,6 +64,9 @@ public class Symbv implements JPFShell {
 
     public void run(SymbvConfig sconf) {
         Executor ex = new Executor(sconf);
-        ExecutionResult er = ex.run();
+        List<ExecutionResult> results = ex.run();
+        System.out.println("\nBEHAVIORAL CHANGES");
+        System.out.println("==================");
+        ex.printValuations(results);
     }
 }
