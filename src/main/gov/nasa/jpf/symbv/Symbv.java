@@ -8,6 +8,8 @@ import gov.nasa.jpf.JPFShell;
 import gov.nasa.jpf.util.JPFLogger;
 import gov.nasa.jpf.util.LogManager;
 
+import java.util.InvalidPropertiesFormatException;
+import java.util.List;
 
 public class Symbv implements JPFShell {
     private Config config;
@@ -44,6 +46,15 @@ public class Symbv implements JPFShell {
                 // this information can be gotten using JavaParser
                 String target = "simple2.Runner"; // fully qualified class name
                 String methodSpec = "run(i: int)"; // run method
+
+				List<SymbvConfig> sConfs = null;
+				try {
+					sConfs = TestConfigGenerator.parseConfig(config);
+				} catch (InvalidPropertiesFormatException e) {
+					e.printStackTrace();
+				}
+				sConfs.forEach(SymbvConfig::setInstanceFieldsSymbolic);
+				sConfs.forEach(this::run);
 
                 SymbvConfig sConf = new SymbvConfig(config);
                 sConf.setConcolicMethod(target, methodSpec);
