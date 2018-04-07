@@ -1,6 +1,6 @@
-package main.java.diffparser.generator;
+package diffparser.generator;
 
-import main.java.diffparser.io.FileManager;
+import diffparser.io.FileManager;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package main.java.diffparser.parser;
+package diffparser.parser;
 
 import javafx.util.Pair;
 import org.junit.Assert;

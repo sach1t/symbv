@@ -1,4 +1,4 @@
-package main.java.diffparser.parser;
+package diffparser.parser;
 
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.body.MethodDeclaration;

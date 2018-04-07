@@ -1,6 +1,6 @@
-package main.java.diffparser.generator;
+package diffparser.generator;
 
-import main.java.diffparser.parser.CodeMethod;
+import diffparser.parser.CodeMethod;
 
 import java.util.*;
 

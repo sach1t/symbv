@@ -1,4 +1,4 @@
-package main.java.diffparser.parser;
+package diffparser.parser;
 
 import org.junit.Assert;
 import org.junit.Before;
