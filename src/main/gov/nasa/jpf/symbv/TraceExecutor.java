@@ -17,8 +17,8 @@ public class TraceExecutor {
         exA.getSconf().setMaxAltDepth(0);
         exB.getSconf().setMaxAltDepth(0);
 
-        ExecutionResult erB = exB.run();
-        ExecutionResult erA = exA.run();
+        ExecutionResult erB = exB.run().get(0);
+        ExecutionResult erA = exA.run().get(0);
 
         erA.ce.getCompletedAnalyses().forEach((method,completedAnalyses) -> {
             completedAnalyses.forEach(ca -> {
