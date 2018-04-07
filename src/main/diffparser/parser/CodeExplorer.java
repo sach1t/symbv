@@ -5,6 +5,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.SimpleName;
 import javafx.util.Pair;
@@ -84,6 +85,14 @@ public class CodeExplorer {
         EnumSet<Modifier> modifiers = codeMethod.getModifiers();
         MethodDeclaration methodDeclaration = type.addMethod(methodName, modifiers.toArray(new Modifier[modifiers.size()]));
         methodDeclaration.setType(codeMethod.getReturnType());
+
+        for (int i = 0; i < codeMethod.parameterTypes.size(); i++) {
+            Pair<String, String> pp = codeMethod.parameterTypes.get(i);
+            Parameter parameter = new Parameter();
+            parameter.setType(pp.getKey());
+            parameter.setName(pp.getValue());
+            methodDeclaration.addParameter(parameter);
+        }
 
         if (codeMethod.getBlock().isPresent()) {
             methodDeclaration.setBody(codeMethod.getBlock().get());

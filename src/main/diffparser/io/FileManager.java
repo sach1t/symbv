@@ -42,6 +42,7 @@ public class FileManager {
     public void writeFile(String filepath, String content) throws FileNotFoundException {
         PrintWriter out = new PrintWriter(this.joinWithBase(filepath).toFile());
         out.print(content);
+        out.close();
     }
 
     public void createDirectory(String dirpath) {

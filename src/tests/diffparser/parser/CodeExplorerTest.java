@@ -17,6 +17,14 @@ public class CodeExplorerTest {
             "\n}}";
     CodeExplorer ceSimple = new CodeExplorer(codeSimple);
 
+    String codeSimpleArguments = "package k;" +
+            "\nclass X {" +
+            "\n  int field;" +
+            "\n  void m (int x, float d){ " +
+            "\n    field = 0;" +
+            "\n}}";
+    CodeExplorer ceSimpleArguments = new CodeExplorer(codeSimpleArguments);
+
     String codeMultipleMethods = "package dream.was.so.big;" +
         "\nclass X {" +
         "\n  int field;" +
@@ -157,6 +165,24 @@ public class CodeExplorerTest {
             String expected = codeMultipleMethods
                     .replace("}}",
                             "} void m2() {\n" +
+                            "        field = 0;\n" +
+                            "    }\n" +
+                            "}");
+            Assert.assertEquals(noSpacings(expected), noSpacings(ceMultipleMethods.currentCode()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void shouldInsertMethodWithArgumentsCorrectly() {
+        try {
+            CodeMethod codeMethod = ceSimpleArguments.findCodeMethod("k.X.m");
+            ceMultipleMethods.includeMethod("dream.was.so.big.X.m2", codeMethod);
+
+            String expected = codeMultipleMethods
+                    .replace("}}",
+                            "} void m2(int x, float d) {\n" +
                             "        field = 0;\n" +
                             "    }\n" +
                             "}");
