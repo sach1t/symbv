@@ -1,4 +1,4 @@
-package simple2;
+package basic;
 
 public class Runner {
 
@@ -8,11 +8,10 @@ public class Runner {
     }
 
     public void run(int i) {
-        Test original = new Test();
-        TestPatched patched = new TestPatched();
+        Test t = new Test();
 
-        Integer ret = original.update(i);
-        Integer ret2 = patched.update(i);
+        Integer ret = t.update(i);
+        Integer ret2 = t.updateOriginal(i);
 
         if (ret.equals(ret2)) {
             throw new Error();

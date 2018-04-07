@@ -8,11 +8,10 @@ public class Runner {
     }
 
     public void run(int pedalPos, int bSwitch, int pedalCmd) {
-        Test original = new Test();
-        TestPatched patched = new TestPatched();
+        Test t = new Test();
 
-        IntPair ret = original.update(pedalPos, bSwitch, pedalCmd);
-        IntPair ret2 = patched.update(pedalPos, bSwitch, pedalCmd);
+        IntPair ret = t.update(pedalPos, bSwitch, pedalCmd);
+        IntPair ret2 = t.updateOriginal(pedalPos, bSwitch, pedalCmd);
 
         if (ret.equals(ret2)) {
             throw new Error();

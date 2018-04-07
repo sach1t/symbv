@@ -1,6 +1,0 @@
-@using = jpf-symbv
-shell=gov.nasa.jpf.symbv.Symbv
-
-# for debugging
-log.finest=symbv
-log.info=constraints,symbv
