@@ -13,10 +13,15 @@ public class Patcher {
     FileManager fileManager;
     String basePackage;
 
+    String jpfFile;
+    int numTest;
+
     public Patcher(FileManager fileManager) {
         this.fileManager = fileManager;
         this.diffApplier = new DiffApplier(fileManager);
         this.basePackage = "";
+        this.jpfFile = "simple.jpf";
+        this.numTest = 0;
     }
 
     public String getBasePackage() {
@@ -25,6 +30,14 @@ public class Patcher {
 
     public void setBasePackage(String basePackage) {
         this.basePackage = basePackage;
+    }
+
+    public String getJpfFile() {
+        return jpfFile;
+    }
+
+    public void setJpfFile(String jpfFile) {
+        this.jpfFile = jpfFile;
     }
 
     // Apply patch and generate tests.
@@ -77,9 +90,25 @@ public class Patcher {
                     modifiedCodeExplorer.includeMethod(modifiedCodeMethod.getCompleteOriginalName(), originalCodeMethod);
 
                     // TODO: Check for symbv constructor
+                    // Save test file
                     TestGenerator testGenerator = new TestGenerator(modifiedCodeMethod, false, this.basePackage);
                     String test = testGenerator.generate();
                     this.fileManager.writeFile(TestGenerator.PACKAGE_NAME + "/" + testGenerator.getTestFilename(), test);
+
+                    // Append information to jpf file
+                    String extraPackage = this.basePackage.length() == 0 ? modifiedCodeMethod.getClassName()
+                            : this.basePackage + "." + modifiedCodeMethod.getClassName();
+                    List<String> arguments = new ArrayList<>();
+                    modifiedCodeMethod.getParameterTypes().forEach(pp -> {
+                        arguments.add(pp.getValue() + ": " + pp.getKey());
+                    });
+
+                    String jpfInfo = "\ntest" + Integer.toString(this.numTest) + ".target = " + extraPackage;
+                    jpfInfo += "\ntest" + Integer.toString(this.numTest) + ".method = run(" + String.join(",", arguments) + ")";
+
+                    // TODO: Have a way to specify the jpf file?
+                    this.fileManager.appendToFile(this.jpfFile, jpfInfo);
+                    this.numTest++;
                 }
             }
 

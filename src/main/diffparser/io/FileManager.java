@@ -1,9 +1,6 @@
 package diffparser.io;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,6 +43,12 @@ public class FileManager {
     public void writeFile(String filepath, String content) throws FileNotFoundException {
         PrintWriter out = new PrintWriter(this.joinWithBase(filepath).toFile());
         out.print(content);
+        out.close();
+    }
+
+    public void appendToFile(String filepath, String content) throws IOException {
+        PrintWriter out = new PrintWriter(new FileWriter(this.joinWithBase(filepath).toString(), true));
+        out.println(content);
         out.close();
     }
 
