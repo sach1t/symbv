@@ -48,7 +48,6 @@ public class SymbvConfig {
 
     public void setConcolicMethod(String FQClassName, String methodSpec) {
         // validate settings
-
         int startParam = methodSpec.indexOf('(');
         int endParam = methodSpec.indexOf(')');
         if ((startParam + 1) != endParam) { // i.e. there are some parameters
