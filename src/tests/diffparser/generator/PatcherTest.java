@@ -63,6 +63,7 @@ public class PatcherTest {
             when(fileManager.readFile("src/main/java/diffparser/generator/dummy.java")).thenReturn(dummyClass);
 
             doNothing().when(fileManager).writeFile(any(String.class), any(String.class));
+            doNothing().when(fileManager).appendToFile(any(String.class), any(String.class));
             doNothing().when(fileManager).createDirectory(any(String.class));
 
         } catch (IOException e) {
@@ -71,7 +72,7 @@ public class PatcherTest {
     }
 
     @Test
-    public void shouldGenerateDummyTestCorrectly() throws FileNotFoundException {
+    public void shouldGenerateDummyTestCorrectly() throws IOException {
 
         Patcher patcher = new Patcher(fileManager);
 
@@ -82,6 +83,7 @@ public class PatcherTest {
                 .writeFile(PatcherTest.saveFilepathCaptor.capture(), PatcherTest.saveContentCaptor.capture());
 
         verify(fileManager, times(1)).createDirectory(any(String.class));
+        verify(fileManager, times(1)).appendToFile(any(String.class), any(String.class));
 
         Assert.assertEquals("symbv/main_java_diffparser_generator___dummy___dummy.java", this.saveFilepathCaptor.getAllValues().get(0));
         Assert.assertEquals("src/main/java/diffparser/generator/dummy.java", this.saveFilepathCaptor.getAllValues().get(1));

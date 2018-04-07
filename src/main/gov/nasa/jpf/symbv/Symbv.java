@@ -36,6 +36,7 @@ public class Symbv implements JPFShell {
                 FileManager fileManager = new FileManager(args[2]);
                 Patcher patcher = new Patcher(fileManager);
                 patcher.setBasePackage(fileManager.getParentName(args[2]));
+                patcher.setJpfFile(fileManager.getFileName(args[0]));
                 patcher.apply(fileManager.getFileName(args[2]));
                 break;
 
