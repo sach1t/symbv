@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="jpf-core">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/jpf-core/build" />
+      <root url="file://$PROJECT_DIR$/lib/jpf-jdart/build" />
+      <root url="file://$PROJECT_DIR$/lib/jpf-jdart/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/jpf-core/build" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/jpf-jdart/build" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/jpf-jdart/lib" recursive="false" />
+  </library>
+</component>
