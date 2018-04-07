@@ -67,6 +67,6 @@ public class Symbv implements JPFShell {
         List<ExecutionResult> results = ex.run();
         System.out.println("\nBEHAVIORAL CHANGES");
         System.out.println("==================");
-        ex.printValuations(results);
+        results.forEach(System.out::print);
     }
 }
