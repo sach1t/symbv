@@ -25,7 +25,6 @@ hs_err_pid*
 # IDE unwanted files
 .idea/workspace.xml
 .idea/uiDesigner.xml
-.idea/libraries/
 
 # Other files
 target
