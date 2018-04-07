@@ -83,6 +83,7 @@ public class CodeExplorer {
         TypeDeclaration type = this.findClass(className);
         EnumSet<Modifier> modifiers = codeMethod.getModifiers();
         MethodDeclaration methodDeclaration = type.addMethod(methodName, modifiers.toArray(new Modifier[modifiers.size()]));
+        methodDeclaration.setType(codeMethod.getReturnType());
 
         if (codeMethod.getBlock().isPresent()) {
             methodDeclaration.setBody(codeMethod.getBlock().get());

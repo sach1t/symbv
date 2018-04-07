@@ -27,9 +27,6 @@ public class Patcher {
             diffResults.add(this.diffApplier.applyPatch(k, v));
         });
 
-        // Only create tests after checking every change, to avoid conflicts.
-        List<TestInfo> testInfos = new ArrayList<>();
-
         // Explore each diff result
         diffResults.forEach(diffResult -> {
             this.createClassTests(diffResult);
@@ -74,18 +71,6 @@ public class Patcher {
             System.out.println("Can't find generate test for " + diffResult.getFilepath() + ", stack: ");
             e.printStackTrace();
             return;
-        }
-    }
-
-    private class TestInfo {
-        CodeExplorer originalCodeExplorer;
-        CodeExplorer modifiedCodeExplorer;
-        String method;
-
-        public TestInfo(CodeExplorer originalCodeExplorer, CodeExplorer modifiedCodeExplorer, String method) {
-            this.originalCodeExplorer = originalCodeExplorer;
-            this.modifiedCodeExplorer = modifiedCodeExplorer;
-            this.method = method;
         }
     }
 }
