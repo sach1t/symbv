@@ -103,8 +103,8 @@ public class Patcher {
                         arguments.add(pp.getValue() + ": " + pp.getKey());
                     });
 
-                    String jpfInfo = "\ntest" + Integer.toString(this.numTest) + ".target = " + extraPackage;
-                    jpfInfo += "\ntest" + Integer.toString(this.numTest) + ".method = run(" + String.join(",", arguments) + ")";
+                    String jpfInfo = "\nsymbv.test" + Integer.toString(this.numTest) + ".target = " + extraPackage;
+                    jpfInfo += "\nsymbv.test" + Integer.toString(this.numTest) + ".method = run(" + String.join(",", arguments) + ")";
 
                     // TODO: Have a way to specify the jpf file?
                     this.fileManager.appendToFile(this.jpfFile, jpfInfo);
