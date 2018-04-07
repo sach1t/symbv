@@ -37,7 +37,7 @@ public class TestGenerator {
 
     private String genPackages() {
         String pkgs = "package symbv;\n\n";
-        pkgs += "import " + this.codeMethod.getPackageName() + ";\n\n";
+        pkgs += "import " + this.codeMethod.getPackageName() + "." + this.codeMethod.getClassName() + ";\n\n";
         return pkgs;
     }
 
