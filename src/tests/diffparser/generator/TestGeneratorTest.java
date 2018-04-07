@@ -39,11 +39,11 @@ public class TestGeneratorTest {
         TestGenerator testGenerator = new TestGenerator(this.codeMethod, false, "");
 
         String expected = "public void run(int arg1, boolean arg2, otherClass arg3) {\n "
-                + "b original = new b();"
                 + "b patched = new b();"
+                + "b original = new b();"
 
-                + "int originalResult = original.c___original(arg1, arg2, arg3);"
                 + "int patchedResult = patched.c(arg1, arg2, arg3);"
+                + "int originalResult = original.c___original(arg1, arg2, arg3);"
 
                 + "if (originalResult == patchedResult) {"
                 + "  throw new Error();"
