@@ -108,7 +108,7 @@ public class CodeExplorer {
         List<Pair<String, String>> parameterTypes = new ArrayList<>();
 
         methodDeclaration.getParameters().forEach(parameter -> {
-            parameterTypes.add(new Pair(parameter.getType().asString(), parameter.getName()));
+            parameterTypes.add(new Pair(parameter.getType().asString(), parameter.getName().asString()));
         });
 
         CodeMethod result = new CodeMethod(completeName, parameterTypes, methodDeclaration.getType().asString(),

@@ -50,4 +50,8 @@ public class FileManager {
             directory.mkdir();
         }
     }
+
+    public String getFileName(String fullpath) {
+        return Paths.get(fullpath).getFileName().toString();
+    }
 }

@@ -30,10 +30,12 @@ public class Symbv implements JPFShell {
             case "gen":
                 if (args.length < 3) {
                     this.logger.warning("For generation, patch file should be specified.");
-                    Patcher patcher = new Patcher(new FileManager());
-                    patcher.apply(args[2]);
                     return;
                 }
+
+                FileManager fileManager = new FileManager(args[2]);
+                Patcher patcher = new Patcher(fileManager);
+                patcher.apply(fileManager.getFileName(args[2]));
                 break;
 
             case "exec":
