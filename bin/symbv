@@ -1,0 +1,11 @@
+if [[ $# -ne 2 ]]; then
+	echo "Usage: $0 <path-to-jpf-file> <path-to-diff>"
+	exit 1;
+fi
+
+JPF=$1
+PATCH=$2
+
+bin/jpf "$1" gen "$2"
+ant build
+bin/jpf "$1" exec
