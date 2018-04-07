@@ -1,0 +1,36 @@
+From 9cb2cc31185ab0ae9fc061310bbb61dbb3fad0da Mon Sep 17 00:00:00 2001
+From: albf <albf.unicamp@gmail.com>
+Date: Sat, 7 Apr 2018 02:12:04 -0400
+Subject: [PATCH] fib-improve
+
+---
+ math.java | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/math.java b/math.java
+index afb2ccc..f75ffef 100644
+--- a/math.java
++++ b/math.java
+@@ -2,11 +2,12 @@ package genBasic;
+ 
+ public class math {
+     public int fibonacci(int n)  {
+-        if(n == 0)
+-            return 0;
+-        else if(n == 1)
+-            return 1;
+-        else
+-            return fibonacci(n - 1) + fibonacci(n - 2);
++        int prev=0, next=1, result=0;
++        for (int i = 0; i < n; i++) {
++            result=prev+next;
++            prev=next;
++            next=result;
++        }
++        return result;
+     }
+ }
+\ No newline at end of file
+-- 
+2.11.0
+
