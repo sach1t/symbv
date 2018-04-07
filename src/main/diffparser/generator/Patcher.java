@@ -22,6 +22,12 @@ public class Patcher {
         Map<String, String> patches = this.diffApplier.splitGitPatchFile(patchFilename);
         List<DiffResult> diffResults = new ArrayList<>();
 
+        // If can't split patch for some reason
+        if (patches == null) {
+            System.out.println("Can't split patch file provided");
+            return;
+        }
+
         // Process all patches on the git patch
         patches.forEach((k, v) -> {
             diffResults.add(this.diffApplier.applyPatch(k, v));
