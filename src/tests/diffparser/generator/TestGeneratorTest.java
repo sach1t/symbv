@@ -24,7 +24,7 @@ public class TestGeneratorTest {
 
     @Test
     public void shouldGenerateMainFunctionCorrectly() throws Exception {
-        TestGenerator testGenerator = new TestGenerator(this.codeMethod, false);
+        TestGenerator testGenerator = new TestGenerator(this.codeMethod, false, "");
 
         String type = "aaa" + TestGenerator.CLASS_SEPARATOR + "b" + TestGenerator.CLASS_SEPARATOR + "c";
         String expected = "public static void main(String args[]) {\n " + type + " t = new " + type + " ();\n"
@@ -36,7 +36,7 @@ public class TestGeneratorTest {
     @Test
     public void shouldGenerateRunFunctionCorrectly() throws Exception {
         codeMethod.setOriginalName("c___original");
-        TestGenerator testGenerator = new TestGenerator(this.codeMethod, false);
+        TestGenerator testGenerator = new TestGenerator(this.codeMethod, false, "");
 
         String expected = "public void run(int arg1, boolean arg2, otherClass arg3) {\n "
                 + "b original = new b();"
@@ -55,9 +55,19 @@ public class TestGeneratorTest {
     @Test
     public void shouldGenerateTestCorrectly() throws Exception {
         codeMethod.setOriginalName("c___original");
-        TestGenerator testGenerator = new TestGenerator(this.codeMethod, false);
+        TestGenerator testGenerator = new TestGenerator(this.codeMethod, false, "");
+        this.assertCompleteTest(testGenerator, "");
+    }
 
-        String expected = "package symbv;\n" +
+    @Test
+    public void shouldGenerateTestCorrectlyWithBasePackage() throws Exception {
+        codeMethod.setOriginalName("c___original");
+        TestGenerator testGenerator = new TestGenerator(this.codeMethod, false, "abc");
+        this.assertCompleteTest(testGenerator, "abc.");
+    }
+
+    private void assertCompleteTest(TestGenerator testGenerator, String basePackage) {
+        String expected = "package " + basePackage + "symbv;\n" +
                 "import " + "aaa.b;\n" +
                 "public class aaa___b___c {" +
                 testGenerator.genMainFunction() +

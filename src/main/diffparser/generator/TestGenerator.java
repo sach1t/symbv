@@ -19,6 +19,7 @@ public class TestGenerator {
 
     CodeMethod codeMethod;
     String testClassName;
+    String basePackage;
 
     static final String PACKAGE_SEPARATOR = "_";
     static final String CLASS_SEPARATOR = "___";
@@ -28,16 +29,23 @@ public class TestGenerator {
     // If has a static construct named symbv that should be used instead of the default one.
     boolean symbvConstructor;
 
-    public TestGenerator(CodeMethod codeMethod, boolean symbvConstructor) throws Exception {
+    public TestGenerator(CodeMethod codeMethod, boolean symbvConstructor, String basePackage) throws Exception {
         this.codeMethod = codeMethod;
         this.testClassName = codeMethod.getPackageName().replace(".", this.PACKAGE_SEPARATOR) + this.CLASS_SEPARATOR
                 + codeMethod.getClassName() + this.CLASS_SEPARATOR + codeMethod.getMethodName();
 
         this.symbvConstructor = symbvConstructor;
+        this.basePackage = basePackage;
     }
 
     private String genPackages() {
-        String pkgs = "package " + this.PACKAGE_NAME + ";\n\n";
+        String pkgs;
+        if (this.basePackage.length() > 0) {
+            pkgs = "package " + this.basePackage + "." + this.PACKAGE_NAME + ";\n\n";
+        } else {
+            pkgs = "package " + this.PACKAGE_NAME + ";\n\n";
+        }
+
         pkgs += "import " + this.codeMethod.getPackageName() + "." + this.codeMethod.getClassName() + ";\n\n";
         return pkgs;
     }

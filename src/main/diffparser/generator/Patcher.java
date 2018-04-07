@@ -11,10 +11,20 @@ import java.util.*;
 public class Patcher {
     DiffApplier diffApplier;
     FileManager fileManager;
+    String basePackage;
 
     public Patcher(FileManager fileManager) {
         this.fileManager = fileManager;
         this.diffApplier = new DiffApplier(fileManager);
+        this.basePackage = "";
+    }
+
+    public String getBasePackage() {
+        return basePackage;
+    }
+
+    public void setBasePackage(String basePackage) {
+        this.basePackage = basePackage;
     }
 
     // Apply patch and generate tests.
@@ -67,7 +77,7 @@ public class Patcher {
                     modifiedCodeExplorer.includeMethod(modifiedCodeMethod.getCompleteOriginalName(), originalCodeMethod);
 
                     // TODO: Check for symbv constructor
-                    TestGenerator testGenerator = new TestGenerator(modifiedCodeMethod, false);
+                    TestGenerator testGenerator = new TestGenerator(modifiedCodeMethod, false, this.basePackage);
                     String test = testGenerator.generate();
                     this.fileManager.writeFile(TestGenerator.PACKAGE_NAME + "/" + testGenerator.getTestFilename(), test);
                 }
