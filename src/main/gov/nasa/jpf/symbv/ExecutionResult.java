@@ -1,10 +1,11 @@
 package gov.nasa.jpf.symbv;
 
+import gov.nasa.jpf.constraints.api.Valuation;
 import gov.nasa.jpf.jdart.ConcolicExplorer;
 import gov.nasa.jpf.jdart.constraints.Path;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class ExecutionResult {
 
@@ -14,8 +15,8 @@ public class ExecutionResult {
         this.ce = ce;
     }
 
-    public Collection<Path> getOkayPaths() {
-        Collection<Path> paths = new ArrayList<>();
+    public List<Path> getOkayPaths() {
+        List<Path> paths = new ArrayList<>();
 
         ce.getCompletedAnalyses().forEach((methodName, completedAnalyses) ->
                 completedAnalyses.forEach(completedAnalysis -> {
@@ -25,5 +26,21 @@ public class ExecutionResult {
                 }));
 
         return paths;
+    }
+
+    public String toString () {
+        StringBuilder out = new StringBuilder();
+        List<Path> paths = this.getOkayPaths();
+        paths.forEach(path -> {
+            Valuation valuation = path.getValuation();
+
+            List<String> assignments = new ArrayList<>();
+            valuation.getVariables().forEach(var -> {
+                assignments.add(var.getName() + " = " + valuation.getValue(var));
+            });
+
+            out.append(String.join(", ", assignments)).append("\n");
+        });
+        return out.toString();
     }
 }
