@@ -120,14 +120,14 @@ public class TestGenerator {
     String genRunFunction() {
         String runFunction = "";
         runFunction += this.indented(1, "public void run(" + this.runnerSignatureArguments() + ") {");
-        runFunction += this.indented(2, this.codeMethod.getClassName() + " original = " + this.getConstructor() + ";");
         runFunction += this.indented(2, this.codeMethod.getClassName() + " patched = " + this.getConstructor() + ";");
+        runFunction += this.indented(2, this.codeMethod.getClassName() + " original = " + this.getConstructor() + ";");
         runFunction += "\n";
+        runFunction += this.indented(2, this.codeMethod.getReturnType() + " patchedResult = patched."
+                + this.codeMethod.getMethodName() + "(" + this.methodCallArguments() + ");");
         runFunction += this.indented(2, this.codeMethod.getReturnType() + " originalResult = original."
                 + this.codeMethod.getOriginalName() + "(" + this.methodCallArguments() + ");");
 
-        runFunction += this.indented(2, this.codeMethod.getReturnType() + " patchedResult = patched."
-                + this.codeMethod.getMethodName() + "(" + this.methodCallArguments() + ");");
 
         runFunction += "\n";
         // If from a basic type, just generate a direct comparison.
