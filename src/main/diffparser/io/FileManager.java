@@ -28,7 +28,11 @@ public class FileManager {
         }
 
         // use parent directory as basePath
-        this.basePath = patchFile.getAbsoluteFile().getParent();
+        this.basePath = this.getParentDirectory(patchFile);
+    }
+
+    private String getParentDirectory(File file) {
+        return file.getAbsoluteFile().getParent();
     }
 
     private Path joinWithBase(String filepath) {
@@ -54,5 +58,12 @@ public class FileManager {
 
     public String getFileName(String fullpath) {
         return Paths.get(fullpath).getFileName().toString();
+    }
+
+    public String getParentName(String path) {
+        File file = new File(path);
+        String parent = this.getParentDirectory(file);
+        File parentFile = new File(parent);
+        return this.getFileName(parent);
     }
 }
