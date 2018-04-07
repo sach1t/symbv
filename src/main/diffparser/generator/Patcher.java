@@ -96,8 +96,8 @@ public class Patcher {
                     this.fileManager.writeFile(TestGenerator.PACKAGE_NAME + "/" + testGenerator.getTestFilename(), test);
 
                     // Append information to jpf file
-                    String extraPackage = this.basePackage.length() == 0 ? modifiedCodeMethod.getClassName()
-                            : this.basePackage + "." + modifiedCodeMethod.getClassName();
+                    String extraPackage = this.basePackage.length() == 0 ? testGenerator.getTestClassName()
+                            : this.basePackage + "." + "symbv." + testGenerator.getTestClassName();
                     List<String> arguments = new ArrayList<>();
                     modifiedCodeMethod.getParameterTypes().forEach(pp -> {
                         arguments.add(pp.getValue() + ": " + pp.getKey());

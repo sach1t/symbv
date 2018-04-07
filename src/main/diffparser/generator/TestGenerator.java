@@ -147,4 +147,8 @@ public class TestGenerator {
     public String getTestFilename() {
         return this.testClassName + ".java";
     }
+
+    String getTestClassName() {
+        return this.testClassName;
+    }
 }
