@@ -63,6 +63,7 @@ public class PatcherTest {
             when(fileManager.readFile("src/main/java/diffparser/generator/dummy.java")).thenReturn(dummyClass);
 
             doNothing().when(fileManager).writeFile(any(String.class), any(String.class));
+            doNothing().when(fileManager).createDirectory(any(String.class));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,7 +81,9 @@ public class PatcherTest {
         verify(fileManager, times(2))
                 .writeFile(PatcherTest.saveFilepathCaptor.capture(), PatcherTest.saveContentCaptor.capture());
 
-        Assert.assertEquals("main_java_diffparser_generator___dummy___dummy.java", this.saveFilepathCaptor.getAllValues().get(0));
+        verify(fileManager, times(1)).createDirectory(any(String.class));
+
+        Assert.assertEquals("symbv/main_java_diffparser_generator___dummy___dummy.java", this.saveFilepathCaptor.getAllValues().get(0));
         Assert.assertEquals("src/main/java/diffparser/generator/dummy.java", this.saveFilepathCaptor.getAllValues().get(1));
 
         // Modified/resulting file, should have BOTH dummy and dummy___original
