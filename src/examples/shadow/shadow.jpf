@@ -1,0 +1,9 @@
+@using = jpf-symbv
+shell=gov.nasa.jpf.symbv.Symbv
+
+# for debugging
+log.finest=jdart,symbv
+log.info=constraints,symbv
+
+symbv.test0.target = shadow.Runner
+symbv.test0.method = run(x: int)
