@@ -151,6 +151,9 @@ public class DiffApplier {
                     originalCurrentLine++;
                     appendDifferentLineNumber(modifiedLines, modifiedCurrentLine);
                     break;
+                case '\\':
+                    // No newline warning should be ignored.
+                    break;
                 default:
                     System.out.println("Unknown patch line: " + next);
                     break;
