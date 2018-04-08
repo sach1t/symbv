@@ -1,0 +1,32 @@
+From c82ba0675448bbf4ddf19e4b9992b1296eac6d8f Mon Sep 17 00:00:00 2001
+From: albf <albf.unicamp@gmail.com>
+Date: Sun, 8 Apr 2018 02:37:33 -0400
+Subject: [PATCH 2/2] containsTwoChanges
+
+---
+ Contains.java | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/Contains.java b/Contains.java
+index 09ffc16..5f35f68 100644
+--- a/Contains.java
++++ b/Contains.java
+@@ -2,13 +2,11 @@ package genContains;
+ 
+ public class Contains {
+     public boolean contains(String text, String query) {
+-        // Count the size of a split. Dumb approach.
+-        return text.split(query, -1).length > 2;
++        return text.indexOf(query) >= 0;
+     }
+ 
+     public boolean containsAny(String text, String query1, String query2) {
+-        // Another dumb mistake. Any should be "OR", but it's "AND" here.
+-        return contains(text, query1) &&
++        return contains(text, query1) ||
+                 contains(text, query2);
+     }
+ }
+-- 
+2.11.0
+
