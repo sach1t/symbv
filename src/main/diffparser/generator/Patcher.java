@@ -89,9 +89,13 @@ public class Patcher {
                     // Add the original method to the code.
                     modifiedCodeExplorer.includeMethod(modifiedCodeMethod.getCompleteOriginalName(), originalCodeMethod);
 
-                    // TODO: Check for symbv constructor
                     // Save test file
-                    TestGenerator testGenerator = new TestGenerator(modifiedCodeMethod, false, this.basePackage);
+                    boolean hasSymbvConstructor = modifiedCodeExplorer.hasMethod(
+                            modifiedCodeMethod.getPackageName(),
+                            modifiedCodeMethod.getClassName(),
+                            TestGenerator.SYMBV_CONSTUCTOR,
+                            modifiedCodeMethod.getClassName());
+                    TestGenerator testGenerator = new TestGenerator(modifiedCodeMethod, hasSymbvConstructor, this.basePackage);
                     String test = testGenerator.generate();
                     this.fileManager.writeFile(TestGenerator.PACKAGE_NAME + "/" + testGenerator.getTestFilename(), test);
 
