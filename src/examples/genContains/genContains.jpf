@@ -1,0 +1,2 @@
+@using = jpf-symbv
+shell=gov.nasa.jpf.symbv.Symbv
