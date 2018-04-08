@@ -56,7 +56,7 @@ public class PatcherTest {
         "    public int dummy() {\n"+
         "        return 1;\n"+
         "    }\n" +
-        "    public dummyWithSymbv symbv() {\n"+
+        "    public static dummyWithSymbv symbv() {\n"+
         "        return new dummy();\n" +
         "    }\n" +
         "}";
@@ -82,7 +82,7 @@ public class PatcherTest {
             "-        return 1;\n" +
             "+        return 2;\n" +
             "     }\n" +
-            "     public dummyWithSymbv symbv() {\n" +
+            "     public static dummyWithSymbv symbv() {\n" +
             "         return new dummy();\n" +
             "-- \n" +
             "2.11.0\n" +
@@ -128,6 +128,7 @@ public class PatcherTest {
         Assert.assertEquals("src/main/java/diffparser/generator/dummy.java", this.saveFilepathCaptor.getAllValues().get(1));
 
         // Modified/resulting file, should have BOTH dummy and dummy___original
+        Assert.assertEquals(false, this.saveContentCaptor.getAllValues().get(0).contains("dummy.symbv();"));
         Assert.assertEquals(true, this.saveContentCaptor.getAllValues().get(1).contains("public int dummy()"));
         Assert.assertEquals(true, this.saveContentCaptor.getAllValues().get(1).contains("public int dummy___original()"));
     }
