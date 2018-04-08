@@ -25,6 +25,7 @@ public class TestGenerator {
     static final String CLASS_SEPARATOR = "___";
     static final String IDENTATION = "    ";
     static final String PACKAGE_NAME = "symbv";
+    static final String SYMBV_CONSTUCTOR = "symbv";
 
     // If has a static construct named symbv that should be used instead of the default one.
     boolean symbvConstructor;
@@ -111,7 +112,7 @@ public class TestGenerator {
 
     String getConstructor() {
         if (this.symbvConstructor) {
-            return this.codeMethod.getClassName() + ".symbv()";
+            return this.codeMethod.getClassName() + "." + this.SYMBV_CONSTUCTOR + "()";
         } else {
             return "new " + this.codeMethod.getClassName() + "()";
         }

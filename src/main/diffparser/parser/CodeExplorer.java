@@ -109,7 +109,7 @@ public class CodeExplorer {
 
         List<MethodDeclaration> declarations = type.getMethodsByName(methodName);
         if (declarations.size() == 0) {
-            throw new Error("Can't find method: " + methodName + " on class: " + className);
+            throw new Exception("Can't find method: " + methodName + " on class: " + className);
         }
 
         // TODO: Deal with overloads
@@ -145,6 +145,19 @@ public class CodeExplorer {
                 }
             });
         });
+    }
+
+    public boolean hasMethod(String packageName, String className, String methodName, String type) {
+        CodeMethod codeMethod = null;
+        try {
+            codeMethod = this.findCodeMethod(packageName + "." + className + "." + methodName);
+            if (codeMethod == null || !codeMethod.getReturnType().equals(type)) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+        }
+        return false;
     }
 
     public String currentCode() {
