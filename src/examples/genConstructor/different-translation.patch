@@ -1,0 +1,27 @@
+From aad20e2691528093d858bc712af5316a254a8dc0 Mon Sep 17 00:00:00 2001
+From: albf <albf.unicamp@gmail.com>
+Date: Sun, 8 Apr 2018 21:31:09 -0400
+Subject: [PATCH] different-translation
+
+---
+ Translator.java | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Translator.java b/Translator.java
+index f00f03e..106d356 100644
+--- a/Translator.java
++++ b/Translator.java
+@@ -19,6 +19,9 @@ public class Translator {
+ 
+     public String translate(int i) {
+         i = Math.abs(i);
+-        return this.responses.get(i % this.responses.size());
++        if (i < this.responses.size()) {
++            return this.responses.get(i);
++        }
++        return this.defaultResponse;
+     }
+ }
+-- 
+2.11.0
+
