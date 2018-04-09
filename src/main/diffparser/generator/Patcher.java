@@ -94,6 +94,7 @@ public class Patcher {
                             modifiedCodeMethod.getPackageName(),
                             modifiedCodeMethod.getClassName(),
                             TestGenerator.SYMBV_CONSTUCTOR,
+                            0,
                             "static",
                             modifiedCodeMethod.getClassName());
                     TestGenerator testGenerator = new TestGenerator(modifiedCodeMethod, hasSymbvConstructor, this.basePackage);

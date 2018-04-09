@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -110,20 +111,21 @@ public class PatcherTest {
         }
     }
 
-    @Test
-    public void shouldGenerateDummyTestCorrectly() throws IOException {
-
-        Patcher patcher = new Patcher(fileManager);
-
-        patcher.apply(dummyPatchFilepath);
-
+    private void verifyFilemanager() throws IOException {
         // Should save test and modified dummy.java
         verify(fileManager, times(2))
                 .writeFile(saveFilepathCaptor.capture(), saveContentCaptor.capture());
 
         verify(fileManager, times(1)).createDirectory(any(String.class));
         verify(fileManager, times(1)).appendToFile(any(String.class), any(String.class));
+    }
 
+    @Test
+    public void shouldGenerateDummyTestCorrectly() throws IOException {
+        Patcher patcher = new Patcher(fileManager);
+        patcher.apply(dummyPatchFilepath);
+
+        this.verifyFilemanager();
         Assert.assertEquals("symbv/main_java_diffparser_generator___dummy___dummy.java", this.saveFilepathCaptor.getAllValues().get(0));
         Assert.assertEquals("src/main/java/diffparser/generator/dummy.java", this.saveFilepathCaptor.getAllValues().get(1));
 
@@ -136,21 +138,33 @@ public class PatcherTest {
     @Test
     public void shouldGenerateDummyWithSymbvTestCorrectly() throws IOException {
         Patcher patcher = new Patcher(fileManager);
-
         patcher.apply(dummyWithSymbvPatchFilepath);
 
-        // Should save test and modified dummy.java
-        verify(fileManager, times(2))
-                .writeFile(saveFilepathCaptor.capture(), saveContentCaptor.capture());
-
-        verify(fileManager, times(1)).createDirectory(any(String.class));
-        verify(fileManager, times(1)).appendToFile(any(String.class), any(String.class));
-
+        this.verifyFilemanager();
         Assert.assertEquals("symbv/main_java_diffparser_generator___dummyWithSymbv___dummy.java", this.saveFilepathCaptor.getAllValues().get(0));
         Assert.assertEquals("src/main/java/diffparser/generator/dummyWithSymbv.java", this.saveFilepathCaptor.getAllValues().get(1));
 
         // Modified/resulting file, should have BOTH dummy and dummy___original
         Assert.assertEquals(true, this.saveContentCaptor.getAllValues().get(0).contains("dummyWithSymbv.symbv();"));
+        Assert.assertEquals(true, this.saveContentCaptor.getAllValues().get(1).contains("public int dummy()"));
+        Assert.assertEquals(true, this.saveContentCaptor.getAllValues().get(1).contains("public int dummy___original()"));
+    }
+
+    @Test
+    public void shouldGenerateDummyWithSymbvWithParametersTestCorrectly() throws IOException {
+        this.dummyWithSymbvClass = this.dummyWithSymbvClass.replace("public static dummyWithSymbv symbv()", "public static dummyWithSymbv symbv(int i)");
+        this.dummyWithSymbvPatch = this.dummyWithSymbvPatch.replace("public static dummyWithSymbv symbv()", "public static dummyWithSymbv symbv(int i)");
+        this.setupMock();
+
+        Patcher patcher = new Patcher(fileManager);
+        patcher.apply(dummyWithSymbvPatchFilepath);
+
+        this.verifyFilemanager();
+        Assert.assertEquals("symbv/main_java_diffparser_generator___dummyWithSymbv___dummy.java", this.saveFilepathCaptor.getAllValues().get(0));
+        Assert.assertEquals("src/main/java/diffparser/generator/dummyWithSymbv.java", this.saveFilepathCaptor.getAllValues().get(1));
+
+        // Modified/resulting file, should have BOTH dummy and dummy___original
+        Assert.assertEquals(false, this.saveContentCaptor.getAllValues().get(0).contains("dummyWithSymbv.symbv();"));
         Assert.assertEquals(true, this.saveContentCaptor.getAllValues().get(1).contains("public int dummy()"));
         Assert.assertEquals(true, this.saveContentCaptor.getAllValues().get(1).contains("public int dummy___original()"));
     }
