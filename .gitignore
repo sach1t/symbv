@@ -14,6 +14,7 @@
 *.jar
 !lib/*/*/*.jar
 !lib/soot.jar
+!lib/diffutils-1.2.1.jar
 *.war
 *.ear
 *.zip
