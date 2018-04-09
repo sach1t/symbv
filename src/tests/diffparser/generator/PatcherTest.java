@@ -136,6 +136,25 @@ public class PatcherTest {
     }
 
     @Test
+    public void shouldGenerateDummyTestWithPrivateMethods() throws IOException {
+        this.dummyWithSymbvClass = this.dummyWithSymbvClass.replace("public int dummy() {", "private int dummy() {");
+        this.dummyWithSymbvPatch = this.dummyWithSymbvPatch.replace("public int dummy() {", "private int dummy() {");
+        this.setupMock();
+
+        Patcher patcher = new Patcher(fileManager);
+        patcher.apply(dummyPatchFilepath);
+
+        this.verifyFilemanager();
+        Assert.assertEquals("symbv/main_java_diffparser_generator___dummy___dummy.java", this.saveFilepathCaptor.getAllValues().get(0));
+        Assert.assertEquals("src/main/java/diffparser/generator/dummy.java", this.saveFilepathCaptor.getAllValues().get(1));
+
+        // Modified/resulting file, should have BOTH dummy and dummy___original
+        Assert.assertEquals(false, this.saveContentCaptor.getAllValues().get(0).contains("dummy.symbv();"));
+        Assert.assertEquals(true, this.saveContentCaptor.getAllValues().get(1).contains("public int dummy()"));
+        Assert.assertEquals(true, this.saveContentCaptor.getAllValues().get(1).contains("public int dummy___original()"));
+    }
+
+    @Test
     public void shouldGenerateDummyWithSymbvTestCorrectly() throws IOException {
         Patcher patcher = new Patcher(fileManager);
         patcher.apply(dummyWithSymbvPatchFilepath);

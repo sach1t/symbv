@@ -99,7 +99,7 @@ public class CodeExplorer {
         }
     }
 
-    public CodeMethod findCodeMethod(String completeName) throws Exception {
+    private MethodDeclaration findMethod(String completeName) throws Exception {
         String [] parts = this.splitCompleteName(completeName);
 
         String className = parts[parts.length-2];
@@ -114,7 +114,12 @@ public class CodeExplorer {
 
         // TODO: Deal with overloads
         MethodDeclaration methodDeclaration = declarations.get(0);
-        List<Pair<String, String>> parameterTypes = new ArrayList<>();
+        return methodDeclaration;
+    }
+
+    public CodeMethod findCodeMethod(String completeName) throws Exception {
+        MethodDeclaration methodDeclaration = this.findMethod(completeName);
+       List<Pair<String, String>> parameterTypes = new ArrayList<>();
 
         methodDeclaration.getParameters().forEach(parameter -> {
             parameterTypes.add(new Pair(parameter.getType().asString(), parameter.getName().asString()));
@@ -124,6 +129,14 @@ public class CodeExplorer {
                 methodDeclaration.getModifiers(), methodDeclaration.getBody());
         result.setOriginalName(result.methodName + this.NAME_MODIFIER);
         return result;
+    }
+
+    public void makeMethodPublic(String completeName) throws Exception {
+        MethodDeclaration methodDeclaration = this.findMethod(completeName);
+
+        methodDeclaration.setPublic(true);
+        methodDeclaration.setPrivate(false);
+        methodDeclaration.setProtected(false);
     }
 
     public void replaceClassNames() {
