@@ -9,34 +9,49 @@ import gov.nasa.jpf.util.JPFLogger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class Executor {
     SymbvConfig sconf;
     private JPFLogger logger = JPF.getLogger("symbv");
-    private int iterations;
+    private int maxIterations = 25;
 
     public Executor(SymbvConfig sconf) {
         this.sconf = sconf;
-        this.iterations = sconf.getIterations();
+        this.maxIterations = sconf.getIterations();
     }
 
     public List<ExecutionResult> run() {
         List<ExecutionResult> results = new ArrayList<>();
-        IntStream.range(0, iterations).forEach(i -> {
+        int i = 0;
+
+        while (true) {
             JDart jd = new JDart(sconf.getJPFConfig(), false);
             ExecutionResult er = new ExecutionResult(jd.run());
             results.add(er);
+
             for (Path p : er.getOkayPaths()) {
                 for (Variable v : p.getValuation().getVariables()) {
                     sconf.addMethodConstraints(v.getName() + "!=" + p.getValuation().getValue(v));
                 }
             }
+            for (Path p: er.getErrorPaths()) {
+                for (Variable v: p.getValuation().getVariables()) {
+                    sconf.addMethodConstraints(v.getName() + "!=" + p.getValuation().getValue(v));
+                }
+            }
+
             logger.info("CONSTRAINTS");
             logger.info("-----------");
             logger.info(Arrays.asList(sconf.getMethodConstraints()));
-        });
+
+            // conditions to break out
+            i += 1;
+            if (i == maxIterations || er.getOkayPaths().size() == 0) {
+                break;
+            }
+        }
         logger.info(Arrays.asList(sconf.getMethodConstraints()));
+        logger.info("TOTAL ITERATIONS = " + i);
 
         return results;
     }
