@@ -18,6 +18,7 @@ public class SymbvConfig {
     static String TEST_PREFIX = "symbv.test";
 
     public int testNumber;
+    public int iterations;
 
     private Config config;
     private JPFLogger logger = JPF.getLogger("symbv");
@@ -27,6 +28,11 @@ public class SymbvConfig {
         this.config = SymbvConfig.copyConfig(jpfConfig);
         setDefaults();
         methodConfigs = new HashSet<>();
+        iterations = getIterations();
+    }
+
+    public int getIterations() {
+        return config.getInt("symbv.iterations", 25);
     }
 
     public static Config copyConfig(Config conf) {
