@@ -80,6 +80,10 @@ public class Patcher {
                 if (!methodsWithTest.containsKey(method)) {
                     methodsWithTest.put(method, true);
 
+                    // Make both methods public, if any is not, for some reason.
+                    modifiedCodeExplorer.makeMethodPublic(method);
+                    originalCodeExplorer.makeMethodPublic(method);
+
                     CodeMethod modifiedCodeMethod = modifiedCodeExplorer.findCodeMethod(method);
                     CodeMethod originalCodeMethod = originalCodeExplorer.findCodeMethod(method);
                     if (!modifiedCodeMethod.hasSameParameters(originalCodeMethod)) {
