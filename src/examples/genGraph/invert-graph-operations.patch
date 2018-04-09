@@ -1,0 +1,44 @@
+From ab74e520d3ad324620362a84ac1ec2f338e19932 Mon Sep 17 00:00:00 2001
+From: albf <albf.unicamp@gmail.com>
+Date: Sun, 8 Apr 2018 23:34:59 -0400
+Subject: [PATCH] invert graph operations
+
+---
+ Graph.java | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/Graph.java b/Graph.java
+index bc2111b..7daa0b2 100644
+--- a/Graph.java
++++ b/Graph.java
+@@ -46,13 +46,6 @@ public class Graph {
+             return -1;
+         }
+ 
+-        if (cn.left != null) {
+-            int leftResult = this._findNodeWithHeight(cn.left, i-1);
+-            if (leftResult >= 0) {
+-                return leftResult;
+-            }
+-        }
+-
+         if (cn.right != null) {
+             int rightResult = this._findNodeWithHeight(cn.right, i-1);
+             if (rightResult >= 0) {
+@@ -60,6 +53,13 @@ public class Graph {
+             }
+         }
+ 
++        if (cn.left != null) {
++            int leftResult = this._findNodeWithHeight(cn.left, i-1);
++            if (leftResult >= 0) {
++                return leftResult;
++            }
++        }
++
+         return -1;
+     }
+ }
+-- 
+2.11.0
+
