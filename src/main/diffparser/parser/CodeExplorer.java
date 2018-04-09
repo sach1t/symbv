@@ -147,11 +147,16 @@ public class CodeExplorer {
         });
     }
 
-    public boolean hasMethod(String packageName, String className, String methodName, String modifier, String type) {
+    public boolean hasMethod(String packageName, String className, String methodName, int totalParameters, String modifier, String type) {
         CodeMethod codeMethod = null;
         try {
             codeMethod = this.findCodeMethod(packageName + "." + className + "." + methodName);
             if (codeMethod == null || !codeMethod.getReturnType().equals(type)) {
+                return false;
+            }
+
+            // CHeck number of parameters
+            if (codeMethod.parameterTypes.size() != totalParameters) {
                 return false;
             }
 
