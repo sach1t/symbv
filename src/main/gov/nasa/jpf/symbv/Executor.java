@@ -17,12 +17,8 @@ public class Executor {
     private int iterations;
 
     public Executor(SymbvConfig sconf) {
-        this(sconf, 5);
-    }
-
-    public Executor(SymbvConfig sconf, int iterations) {
         this.sconf = sconf;
-        this.iterations = iterations;
+        this.iterations = sconf.getIterations();
     }
 
     public List<ExecutionResult> run() {

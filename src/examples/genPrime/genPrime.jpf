@@ -1,2 +1,5 @@
 @using = jpf-symbv
 shell=gov.nasa.jpf.symbv.Symbv
+log.finest=symbv,jdart
+log.info=constraints
+symbv.iterations=1
