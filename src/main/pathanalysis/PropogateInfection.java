@@ -3,17 +3,14 @@ package pathanalysis;
 import soot.Unit;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.scalar.ArraySparseSet;
-import soot.toolkits.scalar.BackwardFlowAnalysis;
 import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.ForwardFlowAnalysis;
 
-
-// TODO: forward flow analysis to taint affected statements/branches for removed statements
-// https://github.com/brucespang/taint-analysis/blob/master/src/Taint.java
-
-public class GoodPathsFlow extends BackwardFlowAnalysis<Unit, FlowSet<Integer>> {
+// should do control + data dependence
+public class PropogateInfection extends ForwardFlowAnalysis<Unit, FlowSet<Integer>> {
     FlowSet<Integer> emptySet = new ArraySparseSet<>();
 
-    public GoodPathsFlow(DirectedGraph graph) {
+    public PropogateInfection(DirectedGraph graph) {
         super(graph);
         doAnalysis();
     }
@@ -29,7 +26,7 @@ public class GoodPathsFlow extends BackwardFlowAnalysis<Unit, FlowSet<Integer>> 
 
     @Override
     protected FlowSet<Integer> newInitialFlow() {
-        return emptySet.clone();
+        return new ArraySparseSet<>();
     }
 
     @Override
@@ -37,8 +34,9 @@ public class GoodPathsFlow extends BackwardFlowAnalysis<Unit, FlowSet<Integer>> 
         in1.union(in2, out);
     }
 
+
     @Override
-    protected void copy(FlowSet<Integer> source, FlowSet<Integer> target) {
-        source.copy(target);
+    protected void copy(FlowSet<Integer> source, FlowSet<Integer> dest) {
+        source.copy(dest);
     }
 }
