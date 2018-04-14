@@ -6,7 +6,7 @@ import gov.nasa.jpf.jvm.bytecode.IfInstruction;
 import gov.nasa.jpf.vm.Instruction;
 import gov.nasa.jpf.vm.ThreadInfo;
 import gov.nasa.jpf.vm.VM;
-import pathanalysis.PathAnalysis;
+import pathanalysis.PathData;
 
 import java.util.Set;
 
@@ -15,10 +15,7 @@ public class CustomListener extends gov.nasa.jpf.ListenerAdapter {
     Set<Integer> prune;
 
     public CustomListener(Config conf) {
-        PathAnalysis pa = new PathAnalysis();
-        prune = pa.run(conf.getProperty("originalTarget"),
-                conf.getProperty("originalMethod"),
-                conf.getProperty("patchedMethod"));
+        prune = PathData.getInstance().getAnalysis(conf.getProperty("originalTarget"));
     }
 
     @Override
@@ -31,7 +28,7 @@ public class CustomListener extends gov.nasa.jpf.ListenerAdapter {
                 System.out.println("INSTRUCTION EXECUTED: " + methodName + ":" + lineNum);
                 ConcolicMethodExplorer cm = ConcolicMethodExplorer.getCurrentAnalysis(current);
                 int nextLineNumber = nextIns.getLineNumber();
-                if (prune.contains(nextLineNumber)) {
+                if (prune != null && prune.contains(nextLineNumber)) {
                     System.out.println("PRUNED PRUNED PRUNED");
                     cm.getInternalConstraintsTree().failCurrentTarget();
                     current.breakTransition(true);
