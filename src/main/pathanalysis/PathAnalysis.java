@@ -18,7 +18,7 @@ public class PathAnalysis {
     private static final String CLASSPATH = "build/examples";
     private static final String RTDOTJAR = "/lib/jvm/java-8-jdk/jre/lib/rt.jar";
 
-    public HashSet<Integer> run(String clazz, String originalMethodName, String modifiedMethodName) {
+    public static HashSet<Integer> run(String clazz, String originalMethodName, String modifiedMethodName) {
         Options.v().setPhaseOption("jb", "use-original-names:true");
         Options.v().set_keep_line_number(true);
         Options.v().set_keep_offset(true);
@@ -95,7 +95,7 @@ public class PathAnalysis {
         return prune;
     }
 
-    public void processDelta(Delta d, Body original, Body modified) {
+    public static void processDelta(Delta d, Body original, Body modified) {
         switch (d.getType()) {
             case CHANGE:
                 List<UnitWrapper> changedUnits = (List<UnitWrapper>) d.getRevised().getLines();
@@ -118,7 +118,7 @@ public class PathAnalysis {
         }
     }
 
-    public Patch compare(Body original, Body modified) {
+    public static Patch compare(Body original, Body modified) {
         List<UnitWrapper> uModified = modified.getUnits().stream()
                 .map(UnitWrapper::new)
                 .collect(Collectors.toList());
