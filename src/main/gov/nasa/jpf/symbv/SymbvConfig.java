@@ -45,6 +45,7 @@ public class SymbvConfig {
     private void setDefaults() {
         config.setProperty("symbolic.dp", "z3");
         config.setProperty("symbolic.dp.z3.bitvectors", "true");
+        config.setProperty("listener", "gov.nasa.jpf.symbv.CustomListener");
     }
 
     public void setConcolicMethod(String FQClassName, String methodSpec, int testNumber) {

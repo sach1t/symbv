@@ -4,20 +4,24 @@ import difflib.Delta;
 import difflib.DiffUtils;
 import difflib.Patch;
 import soot.*;
+import soot.options.Options;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 public class PathAnalysis {
-    private static final String CLASSPATH = "/home/sachit/jpf/symbv/src/examples";
+    private static final String CLASSPATH = "/home/sachit/jpf/symbv/build/examples";
     private static final String RTDOTJAR = "/lib/jvm/java-8-jdk/jre/lib/rt.jar";
 
-    public void run(String clazz, String originalMethodName, String modifiedMethodName) {
+    public HashSet<Integer> run(String clazz, String originalMethodName, String modifiedMethodName) {
+        Options.v().setPhaseOption("jb", "use-original-names:true");
+        Options.v().set_keep_line_number(true);
+        Options.v().set_keep_offset(true);
         Scene s = Scene.v();
         s.setSootClassPath(CLASSPATH + ":" + RTDOTJAR);
         SootClass c = s.loadClassAndSupport(clazz);
@@ -25,23 +29,22 @@ public class PathAnalysis {
         c.setApplicationClass();
 
         SootMethod modifiedMethod = c.getMethodByName(modifiedMethodName);
-        Body modified = modifiedMethod.retrieveActiveBody();
-
+        Body modifiedBody = modifiedMethod.retrieveActiveBody();
         SootMethod originalMethod = c.getMethodByName(originalMethodName);
-        Body original = originalMethod.retrieveActiveBody();
+        Body originalBody = originalMethod.retrieveActiveBody();
 
-        Patch patch = compare(original, modified);
+        Patch patch = compare(originalBody, modifiedBody);
 
         // --------------- debugging
         System.out.println("--------ORIGINAL-----------");
-        Iterator<Unit> ui = original.getUnits().iterator();
+        Iterator<Unit> ui = originalBody.getUnits().iterator();
         int i = 0;
         while (ui.hasNext()) {
             System.out.println(i + ": " + ui.next());
             i+=1;
         }
         System.out.println("----------MODIFIED---------");
-        ui = modified.getUnits().iterator();
+        ui = modifiedBody.getUnits().iterator();
         i = 0;
         while (ui.hasNext()) {
             System.out.println(i + ": " + ui.next());
@@ -56,28 +59,40 @@ public class PathAnalysis {
         // --------------- end debugging
 
         // update the body tags
-        patch.getDeltas().forEach(d -> processDelta(d, original, modified));
+        patch.getDeltas().forEach(d -> processDelta(d, originalBody, modifiedBody));
+        System.out.println("--------@#@!#@#@!#@!#-----------");
 
-        System.out.println("--------MODIFIED CFG-----------");
-        UnitGraph modifiedGraph = new BriefUnitGraph(modified);
-        System.out.println(modifiedGraph);
+        modifiedBody.getUnits().forEach(u -> {
+            System.out.println(u.getJavaSourceStartLineNumber() + "\t" + u + ":" + u.getTags());
+        });
+        System.out.println("--------!@#!@#!@#!@#-----------");
 
-        System.out.println("--------MODIFIED CODE-----------");
-        for (Unit u : modifiedGraph) {
-            System.out.println(u.getTags());
-        }
 
-        System.out.println("--------MODIFIED CFG: GOOD PATHS-----------");
+        UnitGraph modifiedGraph = new BriefUnitGraph(modifiedBody);
         GoodPathsFlow analysis = new GoodPathsFlow(modifiedGraph);
-        for (Unit u: modifiedGraph) {
-            System.out.println(u + "\t\t[" + analysis.getFlowBefore(u) + ", " + analysis.getFlowBefore(u) + "]");
+        for (Unit u: modifiedBody.getUnits()) {
+            System.out.println(u + "\t\t[" + analysis.getFlowBefore(u) + ", " + analysis.getFlowAfter(u) + "]");
+        }
+        PropogateInfection analysi2 = new PropogateInfection(modifiedGraph);
+        for (Unit u: modifiedBody.getUnits()) {
+            System.out.println(u + "\t\t[" + analysi2.getFlowBefore(u) + ", " + analysi2.getFlowAfter(u) + "]");
         }
 
-//        UnitGraph originalGraph = new BriefUnitGraph(original);
-//        System.out.println(originalGraph);
-//        for (Unit u : originalGraph) {
-//            System.out.println(u.getTags());
-//        }
+        HashSet<Integer> prune = new HashSet<>();
+        modifiedGraph.forEach(u ->{
+            if (u.hasTag("change") || analysis.getFlowAfter(u).contains(1) || analysi2.getFlowAfter(u).contains(1)) {
+                // infected
+            } else {
+                prune.add(u.getJavaSourceStartLineNumber());
+            }
+        });
+        System.out.println("--------!@#!@#!@#!@#-----------");
+
+        prune.forEach(System.out::println);
+        System.out.println("--------!@#!@#!@#!@#-----------");
+
+
+        return prune;
     }
 
     public void processDelta(Delta d, Body original, Body modified) {
@@ -119,25 +134,5 @@ public class PathAnalysis {
             System.out.println(d.getRevised());
         });
         return p;
-    }
-
-    private void compareExample() {
-        List<String> a = new ArrayList<>();
-        a.add("A");
-        a.add("B");
-        a.add("C");
-        a.add("D");
-        List<String> b = new ArrayList<>();
-        b.add("A");
-        b.add("E");
-        b.add("C");
-        b.add("D");
-        b.add("E");
-        Patch p = DiffUtils.diff(a, b);
-        p.getDeltas().forEach(d -> {
-            System.out.println(d.getType());
-            System.out.println(d.getOriginal());
-            System.out.println(d.getRevised());
-        });
     }
 }
