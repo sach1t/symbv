@@ -16,7 +16,9 @@ public class CustomListener extends gov.nasa.jpf.ListenerAdapter {
 
     public CustomListener(Config conf) {
         PathAnalysis pa = new PathAnalysis();
-        prune = pa.run("basic.Test", "updateOriginal", "update");
+        prune = pa.run(conf.getProperty("originalTarget"),
+                conf.getProperty("originalMethod"),
+                conf.getProperty("patchedMethod"));
     }
 
     @Override

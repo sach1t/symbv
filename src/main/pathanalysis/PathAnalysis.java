@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 
 public class PathAnalysis {
-    private static final String CLASSPATH = "/home/sachit/jpf/symbv/build/examples";
+    private static final String CLASSPATH = "build/examples";
     private static final String RTDOTJAR = "/lib/jvm/java-8-jdk/jre/lib/rt.jar";
 
     public HashSet<Integer> run(String clazz, String originalMethodName, String modifiedMethodName) {

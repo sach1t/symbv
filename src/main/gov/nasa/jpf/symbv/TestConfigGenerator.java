@@ -28,13 +28,7 @@ public class TestConfigGenerator {
 
         // get test properties
         for (int testNum: testNums) {
-            String target = config.getProperty(SymbvConfig.TEST_PREFIX + Integer.toString(testNum) + ".target");
-            String method = config.getProperty(SymbvConfig.TEST_PREFIX + Integer.toString(testNum) + ".method");
-            if (target == null || method == null) {
-                throw new InvalidPropertiesFormatException("Invalid test config with number " + Integer.toString(testNum));
-            }
-            SymbvConfig sconf = new SymbvConfig(config);
-            sconf.setConcolicMethod(target, method, testNum);
+            SymbvConfig sconf = new SymbvConfig(config, testNum);
             sconfs.add(sconf);
         }
         return sconfs;

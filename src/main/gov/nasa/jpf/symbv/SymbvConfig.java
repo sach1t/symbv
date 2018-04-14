@@ -24,6 +24,14 @@ public class SymbvConfig {
     private JPFLogger logger = JPF.getLogger("symbv");
     private Collection<String> methodConfigs;
 
+    public SymbvConfig(Config jpfConfig, int testNum) throws InvalidPropertiesFormatException {
+        this.config = SymbvConfig.copyConfig(jpfConfig);
+        this.testNumber = testNum;
+        loadTestData();
+        setDefaults();
+        methodConfigs = new HashSet<>();
+    }
+
     public SymbvConfig(Config jpfConfig) {
         this.config = SymbvConfig.copyConfig(jpfConfig);
         setDefaults();
@@ -46,11 +54,6 @@ public class SymbvConfig {
         config.setProperty("symbolic.dp", "z3");
         config.setProperty("symbolic.dp.z3.bitvectors", "true");
         config.setProperty("listener", "gov.nasa.jpf.symbv.CustomListener");
-    }
-
-    public void setConcolicMethod(String FQClassName, String methodSpec, int testNumber) {
-        this.testNumber = testNumber;
-        setConcolicMethod(FQClassName, methodSpec);
     }
 
     public void setConcolicMethod(String FQClassName, String methodSpec) {
@@ -145,4 +148,25 @@ public class SymbvConfig {
         }
     }
 
+    public void loadTestData() throws InvalidPropertiesFormatException {
+        String target = getTestProperty("target");
+        String method = getTestProperty("method");
+        setConcolicMethod(target, method);
+
+        String originalMethod = getTestProperty("originalMethod");
+        String patchedMethod = getTestProperty("patchedMethod");
+        String originalTarget = getTestProperty("originalTarget");
+
+        config.setProperty("originalMethod", originalMethod);
+        config.setProperty("patchedMethod", patchedMethod);
+        config.setProperty("originalTarget", originalTarget);
+    }
+
+    private String getTestProperty(String property) throws InvalidPropertiesFormatException {
+        String value = config.getProperty(SymbvConfig.TEST_PREFIX + Integer.toString(testNumber) + "." + property);
+        if (value == null) {
+            throw new InvalidPropertiesFormatException("Test " + testNumber + " missing " + property + ".");
+        }
+        return value;
+    }
 }

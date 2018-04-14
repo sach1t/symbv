@@ -115,6 +115,9 @@ public class Patcher {
 
                     String jpfInfo = "\nsymbv.test" + Integer.toString(this.numTest) + ".target = " + extraPackage;
                     jpfInfo += "\nsymbv.test" + Integer.toString(this.numTest) + ".method = run(" + String.join(",", arguments) + ")";
+                    jpfInfo += "\nsymbv.test" + Integer.toString(this.numTest) + ".originalMethod = " + modifiedCodeMethod.getOriginalName();
+                    jpfInfo += "\nsymbv.test" + Integer.toString(this.numTest) + ".patchedMethod = " + modifiedCodeMethod.getMethodName();
+                    jpfInfo += "\nsymbv.test" + Integer.toString(this.numTest) + ".originalTarget = " + basePackage + "." + modifiedCodeMethod.getClassName();
 
                     // TODO: Have a way to specify the jpf file?
                     this.fileManager.appendToFile(this.jpfFile, jpfInfo);
