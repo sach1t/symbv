@@ -30,6 +30,8 @@ public class SymbvConfig {
     private JPFLogger logger = JPF.getLogger("symbv");
     private Collection<String> methodConfigs;
 
+    private boolean pruning = false;
+
     public SymbvConfig(Config jpfConfig, int testNum) throws InvalidPropertiesFormatException {
         this.config = SymbvConfig.copyConfig(jpfConfig);
         this.testNumber = testNum;
@@ -59,7 +61,15 @@ public class SymbvConfig {
     private void setDefaults() {
         config.setProperty("symbolic.dp", "z3");
         config.setProperty("symbolic.dp.z3.bitvectors", "true");
+    }
+
+    public void enablePruning() {
         config.setProperty("listener", "gov.nasa.jpf.symbv.PruningListener");
+        pruning = true;
+    }
+
+    public boolean isPruningEnabled() {
+        return pruning;
     }
 
     public void setConcolicMethod(String FQClassName, String methodSpec) {

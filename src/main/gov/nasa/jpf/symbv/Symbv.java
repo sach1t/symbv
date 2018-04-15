@@ -46,6 +46,10 @@ public class Symbv implements JPFShell {
                 break;
 
             case "exec":
+                boolean enablePruning = false;
+                if (args.length >= 3 && args[2].equals("prune")) {
+                    enablePruning = true;
+                }
                 List<SymbvConfig> sConfs = null;
                 try {
                     sConfs = TestConfigGenerator.parseConfig(config);
@@ -55,6 +59,9 @@ public class Symbv implements JPFShell {
                 }
                 for (SymbvConfig s: sConfs) {
                     s.setInstanceFieldsSymbolic();
+                    if (enablePruning) {
+                        s.enablePruning();
+                    }
                     run(s);
                 }
                 break;

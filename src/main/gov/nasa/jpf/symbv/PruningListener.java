@@ -31,7 +31,7 @@ public class PruningListener extends gov.nasa.jpf.ListenerAdapter {
             if (methodName.equals(patchedMethod)) {
                 ConcolicMethodExplorer cm = ConcolicMethodExplorer.getCurrentAnalysis(current);
                 int nextLineNumber = nextIns.getLineNumber();
-                if (!cfg.promisingPath(nextLineNumber)) {
+                if (cfg != null && !cfg.promisingPath(nextLineNumber)) {
                     logger.info("PRUNED Line " + nextLineNumber);
                     cm.getInternalConstraintsTree().failCurrentTarget();
                     current.breakTransition(true);
