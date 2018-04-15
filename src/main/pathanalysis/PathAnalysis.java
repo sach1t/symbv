@@ -3,22 +3,28 @@ package pathanalysis;
 import difflib.Delta;
 import difflib.DiffUtils;
 import difflib.Patch;
+import gov.nasa.jpf.JPF;
+import gov.nasa.jpf.util.JPFLogger;
 import soot.*;
 import soot.options.Options;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.BriefBlockGraph;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
 public class PathAnalysis {
     private static final String CLASSPATH = "build/examples";
     private static final String RTDOTJAR = "/lib/jvm/java-8-jdk/jre/lib/rt.jar";
+    private JPFLogger logger = JPF.getLogger("symbv");
 
-    public static HashSet<Integer> run(String clazz, String originalMethodName, String modifiedMethodName) {
+    public CFGWrapper run(String clazz, String originalMethodName, String modifiedMethodName) {
         Options.v().setPhaseOption("jb", "use-original-names:true");
         Options.v().set_keep_line_number(true);
         Options.v().set_keep_offset(true);
@@ -28,74 +34,110 @@ public class PathAnalysis {
         s.loadNecessaryClasses();
         c.setApplicationClass();
 
+        // get methods out of class
         SootMethod modifiedMethod = c.getMethodByName(modifiedMethodName);
         Body modifiedBody = modifiedMethod.retrieveActiveBody();
         SootMethod originalMethod = c.getMethodByName(originalMethodName);
         Body originalBody = originalMethod.retrieveActiveBody();
 
+        // compare original and modified methods on IR representation
         Patch patch = compare(originalBody, modifiedBody);
-
-        // --------------- debugging
-        System.out.println("--------ORIGINAL-----------");
-        Iterator<Unit> ui = originalBody.getUnits().iterator();
-        int i = 0;
-        while (ui.hasNext()) {
-            System.out.println(i + ": " + ui.next());
-            i+=1;
-        }
-        System.out.println("----------MODIFIED---------");
-        ui = modifiedBody.getUnits().iterator();
-        i = 0;
-        while (ui.hasNext()) {
-            System.out.println(i + ": " + ui.next());
-            i+=1;
-        }
-        System.out.println("--------DIFFERENCES-----------");
+        logger.finest("Code Changes:");
         patch.getDeltas().forEach(d -> {
-            System.out.println(d.getType());
-            System.out.println(d.getOriginal());
-            System.out.println(d.getRevised());
+            logger.finest(d.getType());
+            logger.finest(d.getOriginal());
+            logger.finest(d.getRevised());
         });
-        // --------------- end debugging
 
-        // update the body tags
+        // mark changes in the original and modified code
         patch.getDeltas().forEach(d -> processDelta(d, originalBody, modifiedBody));
-        System.out.println("--------@#@!#@#@!#@!#-----------");
 
+        // create mapping for unchanged lines from original to modified code
+        Map<Unit, Unit> originalToModifiedMap = calculateUnitMap(modifiedBody, originalBody);
+        logger.finest("Original To Modified Code Map:");
+        originalToModifiedMap.forEach((k,v) -> {
+            logger.finest(k + "\t ===== \t" + v);
+        });
+
+        logger.finest("Modified code before CF analysis:");
         modifiedBody.getUnits().forEach(u -> {
-            System.out.println(u.getJavaSourceStartLineNumber() + "\t" + u + ":" + u.getTags());
+            logger.finest(u.getJavaSourceStartLineNumber() + "\t" + u + ":" + u.getTags());
         });
-        System.out.println("--------!@#!@#!@#!@#-----------");
 
-
+        // perform data and control dependency analysis on modified code, for changed and added lines
         UnitGraph modifiedGraph = new BriefUnitGraph(modifiedBody);
-        GoodPathsFlow analysis = new GoodPathsFlow(modifiedGraph);
+        DataInfectionAnalysis mda = new DataInfectionAnalysis(modifiedGraph);
+        BlockGraph modifiedBlockGraph = new BriefBlockGraph(modifiedBody);
+        ControlInfectionAnalysis mca = new ControlInfectionAnalysis(modifiedBlockGraph);
+        logger.finest("Modified code after CF analysis:");
         for (Unit u: modifiedBody.getUnits()) {
-            System.out.println(u + "\t\t[" + analysis.getFlowBefore(u) + ", " + analysis.getFlowAfter(u) + "]");
-        }
-        PropogateInfection analysi2 = new PropogateInfection(modifiedGraph);
-        for (Unit u: modifiedBody.getUnits()) {
-            System.out.println(u + "\t\t[" + analysi2.getFlowBefore(u) + ", " + analysi2.getFlowAfter(u) + "]");
+            logger.finest(Integer.toString(u.getJavaSourceStartLineNumber()) + ":" + u + "\t\t[" +  u.getTags() + "]");
         }
 
-        HashSet<Integer> prune = new HashSet<>();
-        modifiedGraph.forEach(u ->{
-            if (u.hasTag("change") || analysis.getFlowAfter(u).contains(1) || analysi2.getFlowAfter(u).contains(1)) {
-                // infected
-            } else {
-                prune.add(u.getJavaSourceStartLineNumber());
+        // perform data and control dependency analysis on original code, for deleted lines
+        UnitGraph originalGraph = new BriefUnitGraph(originalBody);
+        DataInfectionAnalysis oda = new DataInfectionAnalysis(originalGraph);
+        BlockGraph originalBlockGraph = new BriefBlockGraph(originalBody);
+        ControlInfectionAnalysis oca = new ControlInfectionAnalysis(originalBlockGraph);
+        logger.finest("Original code after CF analysis:");
+        for (Unit u: originalBody.getUnits()) {
+            logger.finest(Integer.toString(u.getJavaSourceStartLineNumber()) + ":" + u + "\t\t[" +  u.getTags() + "]");
+        }
+
+        // bring over affected lines from control flow analysis on original code to the modified code
+        for (Unit u: originalBody.getUnits()) {
+            if (u.hasTag("symbvTag") && originalToModifiedMap.containsKey(u)) {
+                originalToModifiedMap.get(u).addTag(new ChangeTag("deleteEffect"));
             }
-        });
-        System.out.println("--------!@#!@#!@#!@#-----------");
+        }
+        logger.finest("Modified code after importing changes:");
+        for (Unit u: modifiedBody.getUnits()) {
+            logger.finest(Integer.toString(u.getJavaSourceStartLineNumber()) + ":" + u + "\t\t[" +  u.getTags() + "]");
+        }
 
-        prune.forEach(System.out::println);
-        System.out.println("--------!@#!@#!@#!@#-----------");
-
-
-        return prune;
+        return new CFGWrapper(modifiedGraph);
     }
 
-    public static void processDelta(Delta d, Body original, Body modified) {
+
+    private Map<Unit, Unit> calculateUnitMap(Body modified, Body original) {
+        Map<Unit, Unit> unitMap = new HashMap<>();
+
+        Iterator<Unit> modIter = modified.getUnits().iterator();
+        Iterator<Unit> oriIter = original.getUnits().iterator();
+
+        Unit mod = modIter.next();
+        Unit ori = oriIter.next();
+
+        while (modIter.hasNext() && oriIter.hasNext()) {
+            boolean skipped = false;
+
+            if (mod.hasTag("symbvTag")) {
+                String value = new String(mod.getTag("symbvTag").getValue());
+                if (value.equals("inserted")) {
+                    mod = modIter.next();
+                    skipped = true;
+                }
+            }
+
+            if (ori.hasTag("symbvTag")) {
+                ChangeTag ct = (ChangeTag) ori.getTag("symbvTag");
+                if (ct.type.equals("deleted")) {
+                    ori = oriIter.next();
+                    skipped = true;
+                }
+            }
+
+            if (!skipped) {
+                unitMap.put(ori, mod);
+                ori = oriIter.next();
+                mod = modIter.next();
+            }
+        }
+
+        return unitMap;
+    }
+
+    private void processDelta(Delta d, Body original, Body modified) {
         switch (d.getType()) {
             case CHANGE:
                 List<UnitWrapper> changedUnits = (List<UnitWrapper>) d.getRevised().getLines();
@@ -118,7 +160,7 @@ public class PathAnalysis {
         }
     }
 
-    public static Patch compare(Body original, Body modified) {
+    private Patch compare(Body original, Body modified) {
         List<UnitWrapper> uModified = modified.getUnits().stream()
                 .map(UnitWrapper::new)
                 .collect(Collectors.toList());
@@ -127,12 +169,6 @@ public class PathAnalysis {
                 .map(UnitWrapper::new)
                 .collect(Collectors.toList());
 
-        Patch p = DiffUtils.diff(uOriginal, uModified);
-        p.getDeltas().forEach(d -> {
-            System.out.println(d.getType());
-            System.out.println(d.getOriginal());
-            System.out.println(d.getRevised());
-        });
-        return p;
+        return DiffUtils.diff(uOriginal, uModified);
     }
 }

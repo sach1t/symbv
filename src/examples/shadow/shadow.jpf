@@ -3,7 +3,10 @@ shell=gov.nasa.jpf.symbv.Symbv
 
 # for debugging
 log.finest=jdart,symbv
-log.info=constraints,symbv
+log.info=constraints
 
 symbv.test0.target = shadow.Runner
 symbv.test0.method = run(x: int)
+symbv.test0.originalMethod = fooOriginal
+symbv.test0.patchedMethod = foo
+symbv.test0.originalTarget = shadow.Test

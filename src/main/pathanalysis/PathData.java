@@ -1,12 +1,11 @@
 package pathanalysis;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class PathData {
     private static PathData instance;
 
-    HashMap<String, HashSet<Integer>> data;
+    HashMap<String, CFGWrapper> data;
     protected PathData() {
         data = new HashMap<>();
     }
@@ -18,11 +17,11 @@ public class PathData {
         return instance;
     }
 
-    public void addAnalysis(String clazz, HashSet<Integer> pathInfo) {
-        instance.data.put(clazz, pathInfo);
+    public void addAnalysis(String clazz, CFGWrapper cfg) {
+        instance.data.put(clazz, cfg);
     }
 
-    public HashSet<Integer> getAnalysis(String clazz) {
+    public CFGWrapper getAnalysis(String clazz) {
         return data.get(clazz);
     }
 }

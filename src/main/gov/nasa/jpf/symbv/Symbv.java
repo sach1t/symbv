@@ -5,9 +5,11 @@ import diffparser.io.FileManager;
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.JPF;
 import gov.nasa.jpf.JPFShell;
+import gov.nasa.jpf.jdart.constraints.Path;
 import gov.nasa.jpf.util.JPFLogger;
 import gov.nasa.jpf.util.LogManager;
 
+import java.util.ArrayList;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 
@@ -51,10 +53,10 @@ public class Symbv implements JPFShell {
                     e.printStackTrace();
                     return;
                 }
-                sConfs.forEach(s ->{
+                for (SymbvConfig s: sConfs) {
                     s.setInstanceFieldsSymbolic();
                     run(s);
-                });
+                }
                 break;
 
             default:
@@ -67,6 +69,8 @@ public class Symbv implements JPFShell {
         List<ExecutionResult> results = ex.run();
         System.out.println("\nBEHAVIORAL CHANGES");
         System.out.println("==================");
-        results.forEach(System.out::print);
+        List<Path> paths = new ArrayList<>();
+        results.forEach(er -> paths.addAll(er.getOkayPaths()));
+        System.out.println(ExecutionResult.pathsToString(paths));
     }
 }
