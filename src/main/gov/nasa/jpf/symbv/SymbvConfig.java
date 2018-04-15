@@ -17,6 +17,12 @@ public class SymbvConfig {
     static String ANALYSIS_PREFIX = "jdart.configs";
     static String TEST_PREFIX = "symbv.test";
 
+    static String testTargetProperty = "target";
+    static String testMethodProperty = "method";
+    static String testOriginalMethodProperty = "originalMethod";
+    static String testPatchedMethodProperty = "patchedMethod";
+    static String testOriginalTargetProperty = "originalTarget";
+
     public int testNumber;
     public int iterations;
 
@@ -53,7 +59,7 @@ public class SymbvConfig {
     private void setDefaults() {
         config.setProperty("symbolic.dp", "z3");
         config.setProperty("symbolic.dp.z3.bitvectors", "true");
-        config.setProperty("listener", "gov.nasa.jpf.symbv.CustomListener");
+        config.setProperty("listener", "gov.nasa.jpf.symbv.PruningListener");
     }
 
     public void setConcolicMethod(String FQClassName, String methodSpec) {
@@ -149,17 +155,17 @@ public class SymbvConfig {
     }
 
     public void loadTestData() throws InvalidPropertiesFormatException {
-        String target = getTestProperty("target");
-        String method = getTestProperty("method");
+        String target = getTestProperty(testTargetProperty);
+        String method = getTestProperty(testMethodProperty);
         setConcolicMethod(target, method);
 
-        String originalMethod = getTestProperty("originalMethod");
-        String patchedMethod = getTestProperty("patchedMethod");
-        String originalTarget = getTestProperty("originalTarget");
+        String originalMethod = getTestProperty(testOriginalMethodProperty);
+        String patchedMethod = getTestProperty(testPatchedMethodProperty);
+        String originalTarget = getTestProperty(testOriginalTargetProperty);
 
-        config.setProperty("originalMethod", originalMethod);
-        config.setProperty("patchedMethod", patchedMethod);
-        config.setProperty("originalTarget", originalTarget);
+        config.setProperty(testOriginalMethodProperty, originalMethod);
+        config.setProperty(testPatchedMethodProperty, patchedMethod);
+        config.setProperty(testOriginalTargetProperty, originalTarget);
     }
 
     private String getTestProperty(String property) throws InvalidPropertiesFormatException {

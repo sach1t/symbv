@@ -24,11 +24,6 @@ public class UnitWrapper {
 
     @Override
     public boolean equals(Object obj) {
-        // TODO: detect more equivalences, this doesn't work on temp$1/2/3/...
-        if (obj instanceof UnitWrapper) {
-            return u.toString().equals(obj.toString());
-        } else {
-            return false;
-        }
+        return obj instanceof UnitWrapper && u.toString().equals(obj.toString());
     }
 }

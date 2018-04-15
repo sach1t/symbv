@@ -5,9 +5,7 @@ import gov.nasa.jpf.jdart.ConcolicExplorer;
 import gov.nasa.jpf.jdart.constraints.ConstraintsTree;
 import gov.nasa.jpf.jdart.constraints.Path;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public class ExecutionResult {
@@ -40,18 +38,19 @@ public class ExecutionResult {
     }
 
     public String toString () {
-        StringBuilder out = new StringBuilder();
-        List<Path> paths = this.getOkayPaths();
+        return pathsToString(getOkayPaths());
+    }
+
+    public static String pathsToString(List<Path> paths) {
+        Set<String> out = new HashSet<>();
         paths.forEach(path -> {
             Valuation valuation = path.getValuation();
-
             List<String> assignments = new ArrayList<>();
             valuation.getVariables().forEach(var -> {
                 assignments.add(var.getName() + " = " + valuation.getValue(var));
             });
-
-            out.append(String.join(", ", assignments)).append("\n");
+            out.add(String.join(", ", assignments));
         });
-        return out.toString();
+        return String.join("\n", out);
     }
 }

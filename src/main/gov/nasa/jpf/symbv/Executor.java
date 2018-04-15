@@ -5,12 +5,12 @@ import gov.nasa.jpf.constraints.api.Variable;
 import gov.nasa.jpf.jdart.JDart;
 import gov.nasa.jpf.jdart.constraints.Path;
 import gov.nasa.jpf.util.JPFLogger;
+import pathanalysis.CFGWrapper;
 import pathanalysis.PathAnalysis;
 import pathanalysis.PathData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 public class Executor {
@@ -25,11 +25,12 @@ public class Executor {
     }
 
     public void runControlFlowAnalysis() {
-        String originalTarget = sconf.getJPFConfig().getProperty("originalTarget");
-        String originalMethod = sconf.getJPFConfig().getProperty("originalMethod");
-        String patchedMethod = sconf.getJPFConfig().getProperty("patchedMethod");
-        HashSet<Integer> analysisData = PathAnalysis.run(originalTarget, originalMethod, patchedMethod);
-        PathData.getInstance().addAnalysis(originalTarget, analysisData);
+        String originalTarget = sconf.getJPFConfig().getProperty(SymbvConfig.testOriginalTargetProperty);
+        String originalMethod = sconf.getJPFConfig().getProperty(SymbvConfig.testOriginalMethodProperty);
+        String patchedMethod = sconf.getJPFConfig().getProperty(SymbvConfig.testPatchedMethodProperty);
+        PathAnalysis pa = new PathAnalysis();
+        CFGWrapper cfg = pa.run(originalTarget, originalMethod, patchedMethod);
+        PathData.getInstance().addAnalysis(originalTarget, cfg);
     }
 
     public List<ExecutionResult> run() {
