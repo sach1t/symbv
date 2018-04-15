@@ -20,8 +20,10 @@ public class Executor {
 
     public Executor(SymbvConfig sconf) {
         this.sconf = sconf;
-        this.maxIterations = sconf.getIterations();
-        runControlFlowAnalysis();
+        this.maxIterations = sconf.getIterations();;
+        if (sconf.isPruningEnabled()) {
+            runControlFlowAnalysis();
+        }
     }
 
     public void runControlFlowAnalysis() {
