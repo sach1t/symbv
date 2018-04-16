@@ -9,7 +9,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 import java.util.List;
 
-// should do control + data dependence
+
 public class ControlInfectionAnalysis extends ForwardFlowAnalysis<Block, FlowSet<Block>> {
     DominatorsFinder postdoms;
     DominanceFrontier domfront;

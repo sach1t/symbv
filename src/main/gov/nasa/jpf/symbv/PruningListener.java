@@ -11,7 +11,7 @@ import gov.nasa.jpf.vm.VM;
 import pathanalysis.CFGWrapper;
 import pathanalysis.PathData;
 
-// To get data in here, we will just do analysis in here
+
 public class PruningListener extends gov.nasa.jpf.ListenerAdapter {
     CFGWrapper cfg;
     private JPFLogger logger = JPF.getLogger("symbv");
