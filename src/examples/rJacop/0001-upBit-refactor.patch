@@ -1,0 +1,47 @@
+From 4efd0a716bed884579aec232bc59e99e65c2a6f1 Mon Sep 17 00:00:00 2001
+From: albf <albf.unicamp@gmail.com>
+Date: Mon, 16 Apr 2018 16:43:30 -0400
+Subject: [PATCH] upBit-refactor
+
+---
+ FloatDomain.java | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/FloatDomain.java b/FloatDomain.java
+index 3bb50b7..02a5869 100644
+--- a/FloatDomain.java
++++ b/FloatDomain.java
+@@ -6,18 +6,18 @@ public class FloatDomain {
+     // returns previous (toward -inf) floating-point number before d
+     // supposed to be used by constraints
+     public double upBit(double x) {
+-        double y;
+-
+-        if (Double.isInfinite(x) && x > 0)
+-            return FloatDomain.MaxFloat; //Double.NaN;
+-
+-        long xBits = Double.doubleToLongBits(x);
+-        if (x > 0.0)
+-            y = Double.longBitsToDouble(xBits + 1);
+-        else if (x == 0.0)
+-            y = Double.longBitsToDouble(1);
++        if (x > 0.0) {
++            if(Double.isInfinite(x)) {
++                return FloatDomain.MaxFloat; //Double.NaN;
++            }
++            return Double.longBitsToDouble(this.getXBits(x) + 1);
++        } else if (x == 0.0)
++            return Double.longBitsToDouble(1);
+         else
+-            y = Double.longBitsToDouble(xBits - 1);
+-        return y;
++            return Double.longBitsToDouble(this.getXBits(x) - 1);
++    }
++
++    public long getXBits(Double value) {
++        return Double.doubleToLongBits(value);
+     }
+ }
+-- 
+2.11.0
+
