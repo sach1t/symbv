@@ -1,3 +1,10 @@
 @using = jpf-symbv
 shell=gov.nasa.jpf.symbv.Symbv
 log.finest=symbv,jdart
+symbv.iterations=1
+
+symbv.test0.target = rColt.symbv.rColt___listSearcher___binarySearch
+symbv.test0.method = run(search: int,array: int[])
+symbv.test0.originalMethod = binarySearch___original
+symbv.test0.patchedMethod = binarySearch
+symbv.test0.originalTarget = rColt.listSearcher

@@ -1,12 +1,32 @@
 package rColt;
 
+import java.util.Arrays;
+
 public class listSearcher {
 
     public listSearcher() {
     }
 
-    int binarySearch(int search, int[] array) {
-        this.bubbleSort(array);
+    public int binarySearch(int search, int[] array) {
+        bubbleSort(array);
+        int low = 0;
+        int high = array.length - 1;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            int midVal = array[mid];
+            if (midVal < search)
+                low = mid + 1;
+            else if (midVal > search)
+                high = mid - 1;
+            else
+                // key found
+                return mid;
+        }
+        return -1;
+    }
+
+    public int binarySearch___original(int search, int[] array) {
+        Arrays.sort(array);
         int start = 0;
         int end = array.length - 1;
 
