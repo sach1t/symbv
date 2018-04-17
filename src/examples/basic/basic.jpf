@@ -10,3 +10,4 @@ symbv.test0.method = run(i: int)
 symbv.test0.originalMethod = updateOriginal
 symbv.test0.patchedMethod = update
 symbv.test0.originalTarget = basic.Test
+symbv.iterations=4

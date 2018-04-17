@@ -7,3 +7,7 @@ log.info=constraints,symbv
 
 symbv.test0.target = simple.Runner
 symbv.test0.method = run(pedalPos: int, bSwitch: int, pedalCmd: int)
+symbv.test0.originalMethod = updateOriginal
+symbv.test0.patchedMethod = update
+symbv.test0.originalTarget = simple.Test
+symbv.iterations=6
