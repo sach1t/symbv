@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Graph {
+
     Map<Integer, Node> nodes;
+
     int root;
 
     public Graph(Map<Integer, Node> nodes, int root) {
@@ -14,7 +16,6 @@ public class Graph {
 
     public static Graph symbv() {
         Map<Integer, Node> nodes = new HashMap<>();
-
         nodes.put(0, new Node(1, 40));
         nodes.put(1, new Node(2, 3));
         nodes.put(2, new Node(null, null));
@@ -24,7 +25,6 @@ public class Graph {
         nodes.put(42, new Node(null, null));
         nodes.put(43, new Node(null, null));
         nodes.put(50, new Node(null, null));
-
         return new Graph(nodes, 0);
     }
 
@@ -32,40 +32,60 @@ public class Graph {
         if (i < 0) {
             return -1;
         }
-
         return _findNodeWithHeight(0, i);
     }
 
-    private int _findNodeWithHeight(int current, int i) {
+    public int _findNodeWithHeight(int current, int i) {
         if (i <= 0) {
             return current;
         }
-
         Node cn = nodes.get(current);
         if (cn == null) {
             return -1;
         }
-
-        if (cn.left != null) {
-            int leftResult = this._findNodeWithHeight(cn.left, i-1);
-            if (leftResult >= 0) {
-                return leftResult;
-            }
-        }
-
         if (cn.right != null) {
-            int rightResult = this._findNodeWithHeight(cn.right, i-1);
+            int rightResult = this._findNodeWithHeight(cn.right, i - 1);
             if (rightResult >= 0) {
                 return rightResult;
             }
         }
+        if (cn.left != null) {
+            int leftResult = this._findNodeWithHeight(cn.left, i - 1);
+            if (leftResult >= 0) {
+                return leftResult;
+            }
+        }
+        return -1;
+    }
 
+    public int _findNodeWithHeight___original(int current, int i) {
+        if (i <= 0) {
+            return current;
+        }
+        Node cn = nodes.get(current);
+        if (cn == null) {
+            return -1;
+        }
+        if (cn.left != null) {
+            int leftResult = this._findNodeWithHeight(cn.left, i - 1);
+            if (leftResult >= 0) {
+                return leftResult;
+            }
+        }
+        if (cn.right != null) {
+            int rightResult = this._findNodeWithHeight(cn.right, i - 1);
+            if (rightResult >= 0) {
+                return rightResult;
+            }
+        }
         return -1;
     }
 }
 
 class Node {
+
     public Integer left;
+
     public Integer right;
 
     public Node(Integer left, Integer right) {

@@ -1,0 +1,12 @@
+@using = jpf-symbc
+shell=gov.nasa.jpf.symbc.Shell
+log.finest=symbc
+listener = gov.nasa.jpf.symbc.SymbolicListener
+vm.storage.class=nil
+search.multiple_errors=true
+
+target = rJacop.symbv.rJacop___FloatDomain___upBit
+original = rJacop.FloatDomain
+symbolic.method=${target}.run(sym),${original}.upBit___original(sym),${original}.upBit(sym)
+symbolic.debug=on
+

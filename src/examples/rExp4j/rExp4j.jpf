@@ -2,3 +2,9 @@
 shell=gov.nasa.jpf.symbv.Symbv
 log.finest=symbv,jdart,constraints
 symbv.iterations=1
+
+symbv.test0.target = rExp4j.symbv.rExp4j___Expression___Evaluate
+symbv.test0.method = run(nums: int[])
+symbv.test0.originalMethod = Evaluate___original
+symbv.test0.patchedMethod = Evaluate
+symbv.test0.originalTarget = rExp4j.Expression

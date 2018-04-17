@@ -1,3 +1,9 @@
 @using = jpf-symbv
 shell=gov.nasa.jpf.symbv.Symbv
 log.finest=symbv,jdart
+
+symbv.test0.target = genFib.symbv.genBasic___math___fibonacci
+symbv.test0.method = run(n: int)
+symbv.test0.originalMethod = fibonacci___original
+symbv.test0.patchedMethod = fibonacci
+symbv.test0.originalTarget = genFib.math

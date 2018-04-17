@@ -1,0 +1,9 @@
+@using = jpf-symbc
+
+listener = gov.nasa.jpf.symbc.SymbolicListener
+vm.storage.class=nil
+search.multiple_errors=true
+
+target = shadow.Runner
+symbolic.method=shadow.Runner.run(sym),shadow.Test.foo(sym),shadow.Test.fooOriginal(sym)
+symbolic.debug=on

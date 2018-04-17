@@ -1,0 +1,13 @@
+@using = jpf-symbc
+shell=gov.nasa.jpf.symbc.Shell
+log.finest=symbc
+listener = gov.nasa.jpf.symbc.SymbolicListener
+vm.storage.class=nil
+search.multiple_errors=true
+
+target = rColt.symbv.rColt___listSearcher___binarySearch
+original = rColt.listSearcher
+# these need to be concolic here due to the mutation, the effect should be the same since it is symbolic in the
+# calling function.
+symbolic.method=${target}.run(sym#sym),${original}.binarySearch___original(sym#con),${original}.binarySearch(sym#con)
+symbolic.debug=on

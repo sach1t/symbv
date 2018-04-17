@@ -1,3 +1,9 @@
 @using = jpf-symbv
 shell=gov.nasa.jpf.symbv.Symbv
 log.finest=symbv,jdart
+
+symbv.test0.target = rJacop.symbv.rJacop___FloatDomain___upBit
+symbv.test0.method = run(x: double)
+symbv.test0.originalMethod = upBit___original
+symbv.test0.patchedMethod = upBit
+symbv.test0.originalTarget = rJacop.FloatDomain

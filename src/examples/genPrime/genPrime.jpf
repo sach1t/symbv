@@ -3,3 +3,9 @@ shell=gov.nasa.jpf.symbv.Symbv
 log.finest=symbv,jdart
 log.info=constraints
 symbv.iterations=1
+
+symbv.test0.target = genPrime.symbv.genPrime___prime___isPrime
+symbv.test0.method = run(value: int)
+symbv.test0.originalMethod = isPrime___original
+symbv.test0.patchedMethod = isPrime
+symbv.test0.originalTarget = genPrime.prime

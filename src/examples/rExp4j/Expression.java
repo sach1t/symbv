@@ -13,12 +13,24 @@ public class Expression {
     }
 
     public int Evaluate(int[] nums) {
-        ArrayStack arrayStack = new ArrayStack();
-        for (int x: nums) {
+        Stack<Integer> arrayStack = new Stack<>();
+        for (int x : nums) {
             if (arrayStack.isEmpty()) {
                 arrayStack.push(x);
             } else {
-                arrayStack.push(arrayStack.peek() + 1);
+                arrayStack.push(arrayStack.peek() + x);
+            }
+        }
+        return arrayStack.pop();
+    }
+
+    public int Evaluate___original(int[] nums) {
+        ArrayStack arrayStack = new ArrayStack();
+        for (int x : nums) {
+            if (arrayStack.isEmpty()) {
+                arrayStack.push(x);
+            } else {
+                arrayStack.push(arrayStack.peek() + x);
             }
         }
         return arrayStack.pop();
