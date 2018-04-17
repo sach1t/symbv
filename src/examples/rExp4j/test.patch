@@ -1,0 +1,31 @@
+From d88b86f7425f3463bad1bf974c3b1542df9443a6 Mon Sep 17 00:00:00 2001
+From: anon  <anon@gmail.com>
+Date: Tue, 17 Apr 2018 13:56:55 -0400
+Subject: [PATCH] test2
+
+---
+ Expression.java | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Expression.java b/Expression.java
+index 8a4d810..3553800 100644
+--- a/Expression.java
++++ b/Expression.java
+@@ -13,12 +13,12 @@ public class Expression {
+     }
+ 
+     public int Evaluate(int[] nums) {
+-        ArrayStack arrayStack = new ArrayStack();
++        Stack<Integer> arrayStack = new Stack<>();
+         for (int x: nums) {
+             if (arrayStack.isEmpty()) {
+                 arrayStack.push(x);
+             } else {
+-                arrayStack.push(arrayStack.peek() + 1);
++                arrayStack.push(arrayStack.peek() + x);
+             }
+         }
+         return arrayStack.pop();
+-- 
+2.16.2
+
