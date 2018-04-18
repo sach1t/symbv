@@ -2,8 +2,8 @@
 shell=gov.nasa.jpf.symbv.Symbv
 
 # for debugging
-log.finest=jdart
-log.info=constraints,symbv
+log.finest=jdart,symbv
+log.info=constraints
 
 symbv.test0.target = simple.Runner
 symbv.test0.method = run(pedalPos: int, bSwitch: int, pedalCmd: int)

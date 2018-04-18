@@ -1,25 +1,32 @@
 package rExp4j;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Expression {
-    private final List<Double> tokens;
+
+    private List<Integer> tokens;
 
     public Expression() {
-        this.tokens = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0);
+        this.tokens = new ArrayList<>();
+        tokens.add(1);
+        tokens.add(2);
+        tokens.add(3);
+        tokens.add(4);
+        tokens.add(5);
     }
 
-    public double Evaluate() {
+    public int Evaluate(int num) {
         ArrayStack arrayStack = new ArrayStack();
-
-        this.tokens.forEach(x -> {
+        tokens.add(num);
+        for (int x: tokens) {
             if (arrayStack.isEmpty()) {
                 arrayStack.push(x);
             } else {
                 arrayStack.push(arrayStack.peek() + x);
             }
-        });
+        }
         return arrayStack.pop();
     }
 }
