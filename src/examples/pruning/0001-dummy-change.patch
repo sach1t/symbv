@@ -1,0 +1,25 @@
+From 3ae4966d9bac44e92683715683ddfe157600e3ba Mon Sep 17 00:00:00 2001
+From: albf <albf.unicamp@gmail.com>
+Date: Wed, 18 Apr 2018 14:49:47 -0400
+Subject: [PATCH] dummy-change
+
+---
+ Pruned.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Pruned.java b/Pruned.java
+index 79a482a..7576882 100644
+--- a/Pruned.java
++++ b/Pruned.java
+@@ -10,7 +10,7 @@ public class Pruned {
+             result = this.expensive(a);
+         } else {
+             // cheap part
+-            result = 4;
++            result = 2+2;
+             // that's it.
+         }
+         return result;
+-- 
+2.11.0
+
