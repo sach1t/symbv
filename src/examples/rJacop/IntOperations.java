@@ -19,10 +19,7 @@ class Operations {
      */
     public static int multiplyInt(int x, int y) {
         long r = (long)x * (long)y;
-        if ((int)r != r) {
-            return r > 0 ? Integer.MAX_VALUE : Integer.MIN_VALUE; //IntDomain.MaxInt : IntDomain.MinInt;
-        }
-        return (int)r;
+        return Operations.safeInt(r);
     }
 
     /**
@@ -34,12 +31,8 @@ class Operations {
      * @return the result or MaxInt/MinInt if result causes overflow
      */
     public static int addInt(int x, int y) {
-        int r = x + y;
-        // HD 2-12 Overflow iff both arguments have the opposite sign of the result
-        if (((x ^ r) & (y ^ r)) < 0) {
-            return r > 0 ? Integer.MAX_VALUE : Integer.MIN_VALUE; //IntDomain.MaxInt : IntDomain.MinInt;
-        }
-        return r;
+        long r = (long)x + (long)y;
+        return Operations.safeInt(r);
     }
 
     /**
@@ -51,12 +44,18 @@ class Operations {
      * @return the result or MaxInt/MinInt if result causes overflow
      */
     public static int subtractInt(int x, int y) {
-        int r = x - y;
-        // HD 2-12 Overflow iff the arguments have different signs and
-        // the sign of the result is different than the sign of x
-        if (((x ^ y) & (x ^ r)) < 0) {
-            return r > 0 ? Integer.MAX_VALUE : Integer.MIN_VALUE; //IntDomain.MaxInt : IntDomain.MinInt;
+        long r = (long)x - (long)y;
+        return Operations.safeInt(r);
+    }
+
+    private static int safeInt(long r) {
+        if (r > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
         }
-        return r;
+
+        if (r < Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
+        }
+        return (int) r;
     }
 }
