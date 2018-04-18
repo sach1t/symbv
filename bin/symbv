@@ -1,11 +1,22 @@
+set -x
 if [[ $# -ne 2 ]]; then
-	echo "Usage: $0 <path-to-jpf-file> <path-to-diff>"
+	echo "Usage: $0 <example-name> <gen|symbv|prune|symbolic>"
 	exit 1;
 fi
 
-JPF=$1
-PATCH=$2
+EXAMPLE="$1"
+OPERATION="$2"
 
-bin/jpf "$1" gen "$2"
-ant build
-bin/jpf "$1" exec
+if [ "$OPERATION" = "gen" ]; then
+	bin/jpf "src/examples/$1/$1.jpf" gen src/examples/$1/*.patch
+	ant build
+elif [ "$OPERATION" = "symbv" ]; then
+	bin/jpf "src/examples/$1/$1.jpf" "exec"
+elif [ "$OPERATION" = "prune" ]; then
+	bin/jpf "src/examples/$1/$1.jpf" "exec" "prune"
+elif [ "$OPERATION" = "symbolic" ]; then
+	echo "jpf-symbc needs to be installed and listed on global site config for this to work."
+	jpf "src/examples/$1/$1_symbolic.jpf" "exec"
+else
+	echo "unknown option"
+fi
