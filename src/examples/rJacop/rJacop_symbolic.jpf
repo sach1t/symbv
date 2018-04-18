@@ -7,5 +7,5 @@ search.multiple_errors=true
 
 target = rJacop.symbv.rJacop___IntOperations___result
 original = rJacop.IntOperations
-symbolic.method=${target}.run(sym#sym#sym#sym),${original}.result___original(sym#sym#sym#sym),${original}.result(sym#sym#sym#sym)
+symbolic.method=${target}.run(sym#sym#sym),${original}.result___original(sym#sym#sym),${original}.result(sym#sym#sym)
 symbolic.debug=on
