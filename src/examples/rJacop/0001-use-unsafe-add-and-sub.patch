@@ -1,0 +1,26 @@
+From 44b9eb123892ad8bd3a37b884acdb2964992e605 Mon Sep 17 00:00:00 2001
+From: albf <albf.unicamp@gmail.com>
+Date: Wed, 18 Apr 2018 00:37:17 -0400
+Subject: [PATCH] use unsafe add and sub
+
+---
+ IntOperations.java | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/IntOperations.java b/IntOperations.java
+index f18ac9c..b6ac5e0 100644
+--- a/IntOperations.java
++++ b/IntOperations.java
+@@ -2,8 +2,7 @@ package rJacop;
+ 
+ public class IntOperations {
+     int result(int x, int y, int z) {
+-        int resultA = Operations.addInt(x, y);
+-        return Operations.subtractInt(resultA, z);
++        return (x + y) - z;
+     }
+ }
+ 
+-- 
+2.11.0
+

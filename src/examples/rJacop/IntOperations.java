@@ -1,27 +1,13 @@
 package rJacop;
 
 public class IntOperations {
-    int result(int w, int x, int y, int z) {
-        int resultA = Operations.multiplyInt(w, x);
-        int resultB = Operations.addInt(y, z);
-        return Operations.subtractInt(resultA, resultB);
+    int result(int x, int y, int z) {
+        int resultA = Operations.addInt(x, y);
+        return Operations.subtractInt(resultA, z);
     }
 }
 
 class Operations {
-    /**
-     * Returns the product of the arguments,
-     * if the result overflows MaxInt or MinInt is returned.
-     *
-     * @param x the first value
-     * @param y the second value
-     * @return the result or MaxInt/MinInt if result causes overflow
-     */
-    public static int multiplyInt(int x, int y) {
-        long r = (long)x * (long)y;
-        return Operations.safeInt(r);
-    }
-
     /**
      * Returns the sum of its arguments,
      * if the result overflows MaxInt or MinInt is returned.
