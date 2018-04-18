@@ -54,24 +54,6 @@ index d6eb20b..63c47b4 100644
          }
          return -1;
      }
--
--    public void bubbleSort(int[] array) {
--        boolean swapped = true;
--        int j = 0;
--        int tmp;
--        while (swapped) {
--            swapped = false;
--            j++;
--            for (int i = 0; i < array.length - j; i++) {
--                if (array[i] > array[i + 1]) {
--                    tmp = array[i];
--                    array[i] = array[i + 1];
--                    array[i + 1] = tmp;
--                    swapped = true;
--                }
--            }
--        }
--    }
  }
 -- 
 2.11.0
