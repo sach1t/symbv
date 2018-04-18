@@ -1,0 +1,11 @@
+@using = jpf-symbc
+shell=gov.nasa.jpf.symbc.Shell
+log.finest=symbc
+listener = gov.nasa.jpf.symbc.SymbolicListener
+vm.storage.class=nil
+search.multiple_errors=true
+
+target = rJacop.symbv.rJacop___IntOperations___result
+original = rJacop.IntOperations
+symbolic.method=${target}.run(sym#sym#sym#sym),${original}.result___original(sym#sym#sym#sym),${original}.result(sym#sym#sym#sym)
+symbolic.debug=on

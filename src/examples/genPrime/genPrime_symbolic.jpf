@@ -1,0 +1,13 @@
+@using = jpf-symbc
+shell=gov.nasa.jpf.symbc.Shell
+log.finest=symbc
+listener = gov.nasa.jpf.symbc.SymbolicListener
+vm.storage.class=nil
+search.multiple_errors=true
+
+target = genPrime.symbv.genPrime___prime___isPrime
+original = genPrime.prime
+# these need to be concolic here due to the mutation, the effect should be the same since it is symbolic in the
+# calling function.
+symbolic.method=${target}.run(sym),${original}.isPrime___original(sym),${original}.isPrime(sym)
+symbolic.debug=on

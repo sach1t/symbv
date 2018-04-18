@@ -1,0 +1,11 @@
+@using = jpf-symbc
+shell=gov.nasa.jpf.symbc.Shell
+log.finest=symbc
+listener = gov.nasa.jpf.symbc.SymbolicListener
+vm.storage.class=nil
+search.multiple_errors=true
+
+target = rExp4j.symbv.rExp4j___Expression___Evaluate
+original = rExp4j.Expression
+symbolic.method=${target}.run(sym),${original}.Evaluate___original(sym),${original}.Evaluate(sym)
+symbolic.debug=on

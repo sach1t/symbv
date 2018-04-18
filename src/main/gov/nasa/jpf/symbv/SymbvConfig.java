@@ -48,7 +48,7 @@ public class SymbvConfig {
     }
 
     public int getIterations() {
-        return config.getInt("symbv.iterations", 25);
+        return config.getInt("symbv.iterations", 5);
     }
 
     public static Config copyConfig(Config conf) {

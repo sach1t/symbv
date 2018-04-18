@@ -2,7 +2,7 @@ package simple;
 
 public class Test {
 
-    public IntPair update(int pedalPos, int bSwitch, int pedalCmd) {
+    public int update(int pedalPos, int bSwitch, int pedalCmd) {
         if (pedalPos == 0) {
             pedalCmd = pedalCmd + 1;
         } else if (pedalPos == 1) {
@@ -20,17 +20,17 @@ public class Test {
         }
 
         int altpress = 0;
-        if (pedalCmd == 2) {
+        if (pedalCmd < 2) {
             altpress = 0;
         } else if (pedalCmd == 3) {
             altpress = 2;
         } else {
             altpress = 3;
         }
-        return new IntPair(meter, altpress);
+        return meter + altpress;
     }
 
-    public IntPair updateOriginal(int pedalPos, int bSwitch, int pedalCmd) {
+    public int updateOriginal(int pedalPos, int bSwitch, int pedalCmd) {
         if (pedalPos <= 0) {
             pedalCmd = pedalCmd + 1;
         } else if (pedalPos == 1) {
@@ -55,6 +55,6 @@ public class Test {
         } else {
             altpress = 3;
         }
-        return new IntPair(meter, altpress);
+        return meter + altpress;
     }
 }

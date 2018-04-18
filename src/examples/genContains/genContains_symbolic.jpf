@@ -1,0 +1,13 @@
+@using = jpf-symbc
+shell=gov.nasa.jpf.symbc.Shell
+log.finest=symbc
+listener = gov.nasa.jpf.symbc.SymbolicListener
+vm.storage.class=nil
+search.multiple_errors=true
+
+search.depth_limit = 10
+
+target = genFib.symbv.genBasic___math___fibonacci
+original = genFib.math
+symbolic.method=${target}.run(sym),${original}.fibonacci___original(sym),${original}.fibonacci(sym)
+symbolic.debug=on

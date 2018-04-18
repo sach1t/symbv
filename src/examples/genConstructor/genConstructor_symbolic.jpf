@@ -1,0 +1,11 @@
+@using = jpf-symbc
+shell=gov.nasa.jpf.symbc.Shell
+log.finest=symbc
+listener = gov.nasa.jpf.symbc.SymbolicListener
+vm.storage.class=nil
+search.multiple_errors=true
+
+target = genConstructor.symbv.genConstructor___Translator___translate
+original = genConstructor.Translator
+symbolic.method=${target}.run(sym),${original}.translate___original(sym),${original}.translate(sym)
+symbolic.debug=on

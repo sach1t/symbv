@@ -1,0 +1,11 @@
+@using = jpf-symbc
+shell=gov.nasa.jpf.symbc.Shell
+log.finest=symbc
+
+listener = gov.nasa.jpf.symbc.SymbolicListener
+vm.storage.class=nil
+search.multiple_errors=true
+
+target = basic.Runner
+symbolic.method=basic.Runner.run(sym),basic.Test.update(sym),basic.Test.updateOriginal(sym)
+symbolic.debug=on

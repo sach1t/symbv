@@ -10,10 +10,10 @@ public class Runner {
     public void run(int pedalPos, int bSwitch, int pedalCmd) {
         Test t = new Test();
 
-        IntPair ret = t.update(pedalPos, bSwitch, pedalCmd);
-        IntPair ret2 = t.updateOriginal(pedalPos, bSwitch, pedalCmd);
+        int ret = t.update(pedalPos, bSwitch, pedalCmd);
+        int ret2 = t.updateOriginal(pedalPos, bSwitch, pedalCmd);
 
-        if (ret.equals(ret2)) {
+        if (ret == ret2) {
             throw new Error();
         }
     }
