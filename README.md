@@ -16,8 +16,29 @@ Validating Code Changes Using Symbolic Execution
 - `ant build`
 
 ## Usage
+
+To run any of the examples (or another project on a separate directory in the examples directory) you could use the
+shell script provided:
+
 ```
-bin/jpf src/examples/basic/test.jpf
+# Apply patches and generate Symbv tests
+./bin/symbv example_name gen
+
+# Compile everything
+ant build
+
+# Concolic/Symbolic execution
+./bin/symbv example_name symbv
+```
+
+The last command could be replaced by two other options (for prune optimization or full symbolic execution):
+
+```
+# Prune Optimization
+./bin/symbv example_name prune
+
+# Symbolic execution
+./bin/symbv example_name symbolic
 ```
 
 ## Development Info
